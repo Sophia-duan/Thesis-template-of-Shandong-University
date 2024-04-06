@@ -3,9 +3,7 @@
 本论文模板在 CTeX 2.9.2 环境下编译通过。
 
 ## 模板参照
-
-- [关于印发《山东大学学位论文规范（试行）》的通知](http://www.grad.sdu.edu.cn/getNewsDetail.site?newsId=36c1b735-e0a2-4018-9fb6-7dfb8fb10a39)，2007-09-19，查阅日期：2016年10月2日。
-- [关于使用新版博士、硕士学位论文封面的通知及封面填写要求](http://www.grad.sdu.edu.cn/getNewsDetail.site?newsId=a3b4f913-db00-449e-b61e-d48524ded89e)， 2012-04-13，查阅日期：2016年10月2日。
+http://www.me.sdu.edu.cn/info/1033/1838.htm
 
 ## 模板特点
 
