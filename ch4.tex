@@ -1,0 +1,620 @@
+\chapter{\((I+{A}^{\alpha})^{-1} \)的近似算法}
+\echapter{Approximation of $(1+{A}^{\alpha})^{-1}$}
+
+在本章中, 我们将进一步讨论对对分数阶算子\((I+A^{\alpha})^{-1},0 < \alpha < 1\)的近似, 研究的重点仍然是找到一个合适的求和公式 \eqref{1_Ah} 精确近似算子$(I+A^{\alpha})^{-1}$, 将面临的主要挑战仍是如何在 $\alpha$ 接近 1 和 0 时获得高精度的近似.  
+\begin{equation}\label{1_Ah}
+	_I R_Q^{\alpha}[A] = \sum_{j=1}^{Q}w_j(\lambda_jI+A)^{-1},
+\end{equation}
+其中系数 $w_j$ 和 $\lambda_j$ 需要通过精心选择的数值方法获得. 为便于分析, 我们同样假定 $A$ 是定义在区间 $[A_{\min}, A_{\max}]$ 上的正数, 并且 $A_{\min}>0$ 以及 $A_{\max}>0$. 在 $A$ 为正定矩阵或算子的情况下, $A_{\min}$ 和 $A_{\max}$ 分别代表其最小和最大特征值. 
+
+本文中, 我们主要采用文献\cite{Komatsu1966FractionalPO}提出的积分表示\eqref{1_A_alpha}来表示$(I+A^{\alpha})^{-1}$. 具体表达式如下,详细的证明和推导过程可在附录中找到. 
+\begin{equation}\label{1_A_alpha}
+	(I+A^{\alpha})^{-1} =\frac{\sin( \pi\alpha)}{\pi} \int^{\infty}_{0} 
+	\frac{s^{\alpha}(s+A)^{-1}}
+	{1+2s^{\alpha}\cos(\pi \alpha)+s^{2\alpha}}  ds. \qquad\alpha \in (0,1)
+\end{equation}
+
+\section{基于变量变换的梯形公式近似}
+与上一节类似, 我们首先使用基于实线上梯形公式(或中点公式)的方法来实现$\eqref{1_Ah}$, 即:
+\begin{equation}\label{eq-TR-2}
+	(I+{A}^{\alpha})^{-1}\approx \int^{x_{\max}}_{x_{\min}}F_1(x)(\psi(x)+A)^{-1} dx
+	\approx\sum_{j=1}^{Q}w_j(\lambda_jI+A)^{-1}, 
+\end{equation}
+其中$s=\psi(x)$, $w_j=hF_1(x_j)$, 
+\begin{equation}\label{eq-F-q}
+	F_1(x)=\frac{\sin(\pi \alpha)}{\pi}
+	\frac{\psi'(x)(\psi(x))^{\alpha}}
+	{1+2(\psi(x))^{\alpha}\cos(\pi \alpha)+(\psi(x))^{2\alpha}},
+\end{equation}
+$\lambda_j = \psi(x_j), x_j=x_{\min} + jh,
+h = (x_{\max}-x_{\min})/Q$, $Q$是正整数, 
+$x_{\min}$和$x_{\max}$可以通过$\eqref{eq-xmin-xmax}$确定. 
+
+进一步地, 本节将探讨单指数(SE)和双指数(DE)变量变换的应用, 以实现公
+式\eqref{eq-TR-2}, 并据此进行数值实验. 
+\subsection{单指数变换公式(Single-Exponential)}
+采用变量变换\(s=e^{x}\),将原积分$\eqref{1_A_alpha}$转化为下式 \cite{Harizanov2020ASO}:
+\begin{equation}\label{expu_1}
+	(I+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}\frac{e^{\alpha x}(e^{ x}+A)^{-1} e^{ x}}{1+2e^{\alpha x}\cos(\pi\alpha)+e^{2\alpha x}} dx.
+\end{equation}
+
+被积函数定义为: 
+\begin{equation}
+	F_1(x)=\frac{\sin(\pi \alpha)}{\pi} \frac{e^{\alpha x}(e^{ x} +A)^{-1} e^{ x}}{1+2e^{\alpha x}\cos(\pi\alpha)+e^{2\alpha x}}.
+	\label{function_SE_1}
+\end{equation}
+
+图\ref{pfunction_SE_1}展示了不同\(\alpha,A\)下的被积函数图像.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{function_qSE}
+	\caption{不同$A$和$\alpha$下的被积函数$F_1(x)$ \eqref{function_SE_1}}
+	\label{pfunction_SE_1}
+\end{figure}
+
+使用梯形公式近似方程$\eqref{expu_1}$, 得到以下表达式\eqref{eq-F-q},其中
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha)}{\pi}\frac{ \exp((1+\alpha) x_j)}{1+2e^{\alpha  x_j}\cos(\pi\alpha)+e^{2\alpha  x_j}},\\
+		&\lambda_j=\exp( x_j),
+	\end{aligned}
+	\label{lw_SE_q1}
+\end{equation}
+$x_j=x_{\min}+jh$, $h=(x_{\max}-x_{\min})/Q$, $Q$ 为正整数. 可通过算法\ref{determine-bound}确定 $x_{\min}, x_{\max}$, 亦可由 $F_1(x)$ 在 $x\to\pm\infty$ 的渐进行为推导. 
+
+进一步, 我们可以初步估计$x_{\min}$和$x_{\max}$的值: 
+\begin{equation}\label{AS_SE}
+	\begin{aligned}
+		& F_1(x)\rightarrow \frac{\sin(\pi \alpha)}{\pi} \frac{ e^{(1+\alpha) x}}{e^{ x}e^{2\alpha x}}= \frac{\sin(\pi \alpha)}{\pi} e^{-\alpha  x}, \quad (x \rightarrow +\infty)\\
+		& F_1(x)\rightarrow \frac{\sin(\pi \alpha)}{\pi} \frac{ e^{(1+\alpha) x}}{A}. \quad (x \rightarrow -\infty)
+	\end{aligned}
+\end{equation}
+
+令 $ \frac{\sin(\pi \alpha)}{\pi} e^{-\alpha  x}\leq \epsilon (1+{A}^{\alpha})^{-1}$ and  $\frac{\sin(\pi \alpha)}{\pi} \frac{ e^{(1+\alpha) x}}{A} \leq \epsilon (1+{A}^{\alpha})^{-1}$, 可将 $x_{\min}$ and $x_{\max}$估计为:
+\begin{equation}
+	\begin{aligned}
+		&x_{\min}= \frac{\ln(\epsilon \pi  A_{\min} (1+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha))}{(1+\alpha)},\\
+		&x_{\max}=-\frac{\ln(\epsilon \pi (1+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha)))}{\alpha }.
+	\end{aligned}
+	\label{findminmax_SE_q1}
+\end{equation}
+
+同上一章提出的方法一样, 这里我们对于基于梯形公式的方法只给出收敛半径: 
+\begin{theorem}
+	设 \( R(A) \) 表示 SE 方法的收敛半径, 则\(R(A)=\min\left\{\frac{\pi}{2},\frac{\pi}{\alpha}-\pi\right\}.\)
+\end{theorem}
+\begin{proof}	
+	收敛半径为方程\(e^x+A=0\)与\(1+2e^{\alpha x}\cos(\pi\alpha)+e^{2\alpha x}=0\)解的最小虚部,解方程得
+	\begin{equation}\left\{
+		\begin{aligned}
+			&x=\ln(A)+\pi i\\
+			&x=\left(\pm\pi+\frac{\pi}{\alpha}\right)i
+		\end{aligned}\right.
+	\end{equation}
+	从而
+	\begin{equation}
+		R(A)=\min\left\{\frac{\pi}{2},\frac{\pi}{\alpha}-\pi\right\}.
+	\end{equation}
+\end{proof}
+
+该定理指出, 收敛半径明显的受\(\alpha\)取值的影响, 特别是当\(\alpha\rightarrow 1\)的时候, \(R(A)\rightarrow 0\), 这会严重增大计算误差. 
+
+接下来, 我们测试SE变换的相对误差, 本章及其余部分均使用误差公式\eqref{error_q}: 
+\begin{equation}
+	e(t)=\left|\frac{(I+{A}^{\alpha})^{-1}-\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}}{(I+{A}^{\alpha})^{-1}}\right|
+	\label{error_q}
+\end{equation}
+所有参数的选择与前一章中的相同. 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{Error_q1_SE}
+	\caption{基于SE方法的相对误差}
+	\label{E_SE_q1}
+\end{figure}
+
+从图\ref{E_SE_q1}中可以明显看出单指数变换（SE）方法对$\alpha$有较高的敏感性. 当$\alpha$远离0或1时, 特别是\(\alpha\in(0.1,0.5)\)时, 单指数变换（SE）方法能够达到较高的精确度. 然而, 对于$\alpha=10^{-3}$和$\alpha=1-10^{-3}$时, 相对误差显著增大, 此现象揭示了SE方法在$\alpha$逼近极限值0或1时的局限性. 
+
+对于$\alpha$趋近于0时SE方法精度降低的现象, 我们从$F_1(x)$在$x$趋向无穷大时的渐近行为（参见式\eqref{AS_SE}）给出一种解释. 具体地, 当$x \rightarrow +\infty$并且$\alpha \rightarrow 0$时, $F_1(x)$的衰减速度缓慢（见图\ref{pfunction_SE_1}）, 导致积分\eqref{expu_1}呈现出$0\times \infty$的不确定形式, 从而增大计算误差. 
+
+对于$\alpha$趋近于1时SE方法精度降低的现象, 我们从原始积分方程\eqref{1_A_alpha}给出解释. 具体地, 当$x \rightarrow 0$并且$\alpha \rightarrow 1$时, $F_1(x)$中\(1+2e^{\alpha x}\cos(\alpha \pi)+e^{2\alpha x}\rightarrow 0\),从而导致当\(x=1\)时, $F_1(x)\rightarrow \infty$（见图\ref{pfunction_SE_1}）, 从而增大计算误差,影响近似的准确性. 
+
+通过数值测试, 我们得到选择$Q$值的初步方案. 一般而言, 当相对误差降至$10^{-10}$时, 我们认为已足够满足精确性要求. 在应用SE公式时, 若$\alpha$落在$(0.1,0.5)$的区间内, 选择$Q=512$即可获得所需的精度. 
+
+
+\subsection{双指数变换公式(Double-Exponential)}
+\esubsection{Double-Exponential (DE) formulas}
+采用变量变换 $s=\exp(\sinh x)$, 将公式\eqref{1_A_alpha}转化为: 
+\begin{equation}
+	(I+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}
+	\frac{\cosh(x)e^{(1+\alpha)\sinh x}(e^{\sinh x}+A)^{-1}}{1+2e^{ \alpha \sinh x}\cos(\pi\alpha)+e^{2\alpha\sinh x}}dx.
+	\label{de_q1}
+\end{equation}
+
+定义被积函数: 
+\begin{equation}\label{function_DE_q1}
+	F_1(x)=\cosh(x) \frac{\sin(\pi \alpha)}{\pi} \frac{e^{(1+\alpha)\sinh x}(e^{\sinh x}+A)^{-1}}{1+2e^{ \alpha \sinh x}\cos(\pi\alpha)+e^{2\alpha\sinh x}}.
+\end{equation}
+
+图\ref{pfunction_DE_q1}展示了不同\(\alpha,A\)下的被积函数图像.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{function_qDE}
+	\caption{不同$A$和$\alpha$下的被积函数$F_1(x)$ \eqref{function_DE_q1}}
+	\label{pfunction_DE_q1}
+\end{figure}
+
+使用梯形公式近似方程$\eqref{de_q1}$得到以下表达式\eqref{eq-F-q}, 其中: 
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha)}{\pi}\frac{\cosh x_j\exp((1+\alpha)\sinh x_j )}{(1+2\exp(\alpha \sinh x_j)\cos(\pi\alpha)+\exp(2\alpha\sinh x_j))},\\
+		&\lambda_j=\exp(\sinh x_j),
+	\end{aligned}
+	\label{lw_DE_q1}
+\end{equation}
+$x_j=x_{\min}+jh$, $h=(x_{\max}-x_{\min})/Q$, $Q$ 为正整数. 可通过算法\ref{determine-bound}确定 $x_{\min}, x_{\max}$, 亦可由 $F_1(x)$ 在 $x\to\pm\infty$ 的渐进行为推导. 
+
+进一步, 我们可以初步估计$x_{
+	\min}$和$x_{\max}$的值: 
+\begin{equation}
+	\begin{aligned}
+		F_1\left( x \right) &
+		\rightarrow \frac{\sin(\pi \alpha)}{2\pi} \exp \left(  -\alpha  e^x /2\right),
+		\quad (x \rightarrow +\infty)\\
+		F_1\left( x \right) &
+		\rightarrow
+		\frac{\sin(\pi \alpha)}{2 A \pi} \exp \left(-(\alpha+1) \frac{e^{-x}}{2}\right).
+		\quad (x \rightarrow -\infty)\\
+	\end{aligned}
+\end{equation}
+
+令$ \frac{\sin(\pi \alpha)}{2\pi} \exp \left(  -\alpha e^x /2\right) \leq \epsilon  (I+{A}^{\alpha})^{-1}$ and $\frac{\sin(\pi \alpha)}{2 A\pi} \exp \left(-(\alpha+1) e^{-x}/2\right) \leq \epsilon  (I+{A}^{\alpha})^{-1}$, 可将 $x_{\min}$ and $x_{\max}$估计为:
+\begin{equation}
+	\begin{aligned}
+		&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon \pi (1+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha)))}{ \alpha}\right),\\
+		&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon \pi A_{\min}  (1+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha)))}{(1+\alpha)}\right).
+	\end{aligned}
+	\label{findminmax_DE_q1}
+\end{equation}
+
+这里我们对于基于梯形公式的方法只给出收敛半径: 
+\begin{theorem}\label{error-DEq1}
+	设 \( R(A) \) 表示 DE 方法的收敛半径, 则
+	\begin{equation}
+		R(A)=\frac{1}{2}\min\left\{\pi,\text{Im}\{\sinh^{-1}(\ln(A)+\pi i)\},\text{Im}\left\{\sinh^{-1}\left(\left(-\pi+\frac{\pi}{\alpha}\right)i\right)\right\}\right\}.
+	\end{equation}
+\end{theorem}
+\begin{proof}	
+	收敛半径为方程\(\exp(\sinh x)+A=0\)与\(1+2 \exp({\alpha \sinh x})\cos(\pi\alpha)+\exp({2\alpha \sinh x})=0\)解的最小虚部,解方程得
+	\begin{equation}\left\{
+		\begin{aligned}
+			&\sinh x=\ln(A)+\pi i\\
+			&\sinh x=\left(\pm\pi+\frac{\pi}{\alpha}\right)i
+		\end{aligned}\right.
+	\end{equation}
+	从而
+	\begin{equation}
+		R(A)=\frac{1}{2}\min\left\{\pi,\text{Im}\{\sinh^{-1}(\ln(A)+\pi i)\},\text{Im}\left\{\sinh^{-1}\left(\left(-\pi+\frac{\pi}{\alpha}\right)i\right)\right\}\right\}.
+	\end{equation}
+\end{proof}
+该定理表明, 收敛半径与\(A,\alpha\)均有关系, 参考定理\ref{A_DE}可知, 当\(\ln(A)\)越大时, 收敛半径\(R(A)\)越小. 
+图$\ref{E_DE_q1}$展示了DE变换的相对误差. 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{Error_q1_DE}
+	\caption{基于DE方法的相对误差}
+	\label{E_DE_q1}
+\end{figure}
+
+从图\ref{E_DE_q1}可以看出, 双指数变换（DE）方法对参数\( \alpha \)和\( A \)极为敏感. 这与定理\ref{error-DEq1}的发现一致. 特别是当\( \alpha \)未接近0或1时, DE方法在区间$[10^{-20}, 10^{20}]$内实现高精度需要768个点. 在\( A \)接近1时, 该方法表现良好, 能够用更少的点数达到高精度；而当\( A \)远离1时, 则需要更多的点数. 然而, 对于极端值\( \alpha=10^{-3} \)和\( \alpha=1-10^{-3} \), 相对误差显著增大, 这进一步揭示了DE方法在\( \alpha \)接近0或1时的局限性. 
+
+
+对于$\alpha$趋近于0或1时SE方法精度降低的现象, 我们也同样可以从$F_1(x)$在$x$趋向无穷大时的渐近行为或原始积分方程\eqref{1_A_alpha}给出解释. 
+
+通过数值测试, 我们得到选择$Q$值的初步方案. 在应用DE公式时, 若$\alpha$落在$(0.1,0.9)$的区间内, 选择$Q=768$即可获得所需的精度, 若$A \in[10^{-10},10^{-10}]$,选择$Q=512$即可获得所需的精度.
+
+
+\section{\((I+{A}^{\alpha})^{-1} \)近似的改进算法}
+从上节的分析中可以看出, 当\(\alpha \rightarrow 0\)或者\(\alpha \rightarrow 1\)的时候的近似效果都不太理想.究其原因, 是由于在\(\alpha \rightarrow 0 \)的时候, 被积函数为在\(s=\infty\)时无界, 且积分为\(0\times\infty\)型. 
+在$\alpha \rightarrow 1$时对被积函数分母的近似为$(s-1)^2$, 在$s=1$处引入了渐进奇点. 
+
+在本节中, 我们将参考第\ref{A-alpha}章中提出的方法，给出对于算子\((I+A^{\alpha})^{-1}\)的改进算法, 特别关注于\(\alpha\rightarrow 1\)和\(\alpha \rightarrow 0\)的情形. 
+\subsection{对于$\alpha \rightarrow 1$的改进算法}
+通过上节中的图像可以发现, 当\(\alpha\)在0.5附近的时候, 算子近似的效果是非常好的. 这启示我们, 当$\alpha \rightarrow 1$, 可以采用下面的积分公式进行计算：
+\begin{equation}\label{se1_q}
+	(I+A^{\alpha})^{-1}=(I+(A^2)^{\alpha/2})^{-1}
+	=\frac{\sin(\pi \alpha /2)}{\pi}\int_0^{\infty}\frac{s^{\alpha/2}(sI+A^2)^{-1}}{1+2s^{\alpha/2}\cos(\pi \alpha/2)+s^{\alpha}}ds	.
+\end{equation}
+
+定义被积函数：
+\begin{equation}
+	F_{1}(x)
+	=\frac{\sin(\pi \alpha /2)}{\pi}\frac{x^{\alpha/2}(x+A^2)^{-1}}{1+2x^{\alpha/2}\cos(\pi \alpha/2)+x^{\alpha}}.
+\end{equation}
+
+进一步, 可以使用梯形公式做如下近似：
+\begin{equation}\label{trap_se1}
+	\begin{aligned}
+		(q+{A}^{\alpha})^{-1}\approx & h\sum_{j=-\infty}^{+\infty} F_1(jh)
+		=\sum_{j=0}^{Q}w_j(\lambda_jI+A^2)^{-1}\\
+		=&\sum_{j=0}^{Q}\frac{w_j}{2\sqrt{\lambda_j}}\left[\left(\sqrt{\lambda_j}+iA\right)^{-1}+\left(\sqrt{\lambda_j}-iA\right)^{-1}\right]\\
+		=&\sum_{j=1}^{Q}\hat{w_j}Re\left\{\left(\hat{\lambda_j}I+iA\right)^{-1}\right\},
+	\end{aligned}
+\end{equation}
+其中 $\hat{w_j}=w_j/\sqrt{\lambda_j}, \hat{\lambda_j}=\sqrt{\lambda_j}$.
+当$\alpha$接近1时, 得到的结果与上节中$\alpha=0.5$时的结果非常相似. 
+
+下面我们能给出SE方法和DE方法的基本参数和结果如下：
+\subsubsection{1. 基于Single-Exponential (SE)公式的积分方法}
+在$\eqref{se1_q}$中利用$s=e^{ x}$公式, 可以得到
+\begin{equation}
+	(I+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha/2)}{\pi}\int_{-\infty}^{+\infty}\frac{e^{\alpha x/2}(e^{ x} I+A^2)^{-1} e^{ x}}{1+2e^{\alpha x/2}\cos(\pi\alpha/2)+e^{\alpha x}} dx.
+	\label{expu_se1_q1}
+\end{equation}
+
+使用梯形公式方法, 其中参数为
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha/2)}{\pi}\frac{ \exp((1+\alpha/2) x_j)}{q^2+2qe^{\alpha/2  x_j}\cos(\pi\alpha/2)+e^{\alpha  x_j}},\\
+		&\lambda_j=\exp( x_j).
+	\end{aligned}
+	\label{lw_SE1_q}
+\end{equation}
+
+对 $x_{\min}$ and $x_{\max}$的初步估计为：
+\begin{equation}	\label{findminmax_SE1_q}
+	\left\{
+	\begin{aligned}
+		&x_{\min}= \frac{\ln(\epsilon \pi q^2 A^2_{\min} (q+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha/2)))}{(1+\alpha/2)}\\
+		&x_{\max}=-\frac{\ln(\epsilon \pi (q+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha/2)))}{\alpha /2}
+	\end{aligned}
+	\right.
+\end{equation}
+
+\subsubsection{2. 基于Double-Exponential (DE)公式的积分方法}
+在$\eqref{se1_q}$中利用$s=\exp(\sinh x)$ 公式, 可以得到：
+\begin{equation}	\label{de1_q1}
+	(I+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha/2)}{\pi}\int_{-\infty}^{+\infty}
+	\frac{\cosh(x)e^{(1+\alpha/2)\sinh x}(e^{\sinh x}{I}+A^2)^{-1}}{1+2 e^{ \alpha/2 \sinh x}\cos(\pi\alpha/2)+e^{\alpha\sinh x}}dx.
+\end{equation}
+
+使用梯形公式方法, 其中参数为
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha/2)}{\pi}\cosh x_j\frac{e^{(1+\alpha/2)\sinh x_j }}{(1+2 e^{ \alpha/2 \sinh x_j}\cos(\pi\alpha/2)+e^{\alpha\sinh x_j})},\\
+		&\lambda_j=\exp(\sinh x_j).
+	\end{aligned}
+	\label{lw_DE1_q}
+\end{equation}
+
+对 $x_{\min}$ and $x_{\max}$的初步估计为：
+\begin{equation}
+	\begin{aligned}
+		&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon \pi (1+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi \alpha /2)))}{ \alpha/2}\right),\\
+		&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon \pi A^2_{\min} (1+{A_{\max}}^{\alpha})^{-1}/(\sin(\pi\alpha/2)))}{(1+\alpha/2)}\right).
+	\end{aligned}
+	\label{findminmax_DE1_q}
+\end{equation}
+
+\subsubsection{3. 针对\(\alpha \rightarrow 1\)的其他数值方法实验}
+在这里, 我们提出针对其他围道（沿虚轴, 证明在附录中）展开的积分近似方法：
+\begin{equation}\label{function_q_alpha_2}
+	\begin{aligned}
+		&(I+A^{\alpha})^{-1}=\frac{1}{\pi} \int_{0}^{\infty} 	\frac{A+r^{\alpha+1}\sin\left(\frac{\pi}{2}\alpha\right)+r^{\alpha}A\cos\left(\frac{\pi}{2} \alpha\right)}
+		{\left(1+2r^{\alpha}\cos(\frac{\pi}{2} \alpha)+r^{2\alpha}\right)\left(r^2I+A^2\right)} dr\\
+		&=\sum_{j=0}^{Q}w_j(\lambda_j^2 I+A^2)^{-1}
+		=\sum_{j=1}^{Q}\hat{w_j}Re\left\{\left(\lambda_jI+iA\right)^{-1}\right\},
+	\end{aligned}
+\end{equation}
+其中 $\hat{w_j}=w_j/{\lambda_j} $.	
+
+在这里, 我们简单给出SE和DE方法的相关参数, 数值实验结果展示在附录里. 
+\begin{itemize}
+	\item 对于SE变换   $\psi(x)=\psi_{\mathrm{SE}}(x)=e^{ x}$, 
+	$w_j$ 和 $\lambda_j$ 为：
+	\begin{equation}
+		\begin{aligned}
+			&w_j=\frac{1+\left(e^{ x_j}\right)^{\alpha}\cos\left(\frac{\pi}{2} \alpha\right) e^{ x_j}+\left(e^{ x_j}\right)^{\alpha+1}\sin\left(\frac{\pi}{2}\alpha\right) e^{ x_j}}
+			{\pi\left(1+2\left(e^{ x_j}\right)^{\alpha}\cos\left(\frac{\pi}{2} \alpha\right)+\left(e^{ x_j}\right)^{2\alpha}\right)},\\
+			&\lambda_j=\exp({2 x_j}).
+		\end{aligned}
+		\label{wl_q_SE_im}
+	\end{equation}
+	\item 对于DE变换   $\psi(x)=\psi_{\mathrm{DE}}(x)=\exp(\sinh(x))$, 
+	$w_j$ 和 $\lambda_j$ 为：
+	\begin{equation}
+		\begin{aligned}
+			w_j=&\frac{\left(1+\left(\exp(\sinh(x_j))\right)^{\alpha}\cos\left(\frac{\pi}{2} \alpha\right)\right) \cosh x_j\exp\left(\sinh(x_j)\right)}
+			{\pi\left(1+2\left(\exp(\sinh(x_j))\right)^{\alpha}\cos\left(\frac{\pi}{2} \alpha\right)+\left(\exp(\sinh(x_j))\right)^{2\alpha}\right)}\\
+			+&\frac{\left(\exp(\sinh(x_j))\right)^{\alpha+1}\sin\left(\frac{\pi}{2}\alpha\right) \cosh x_j\exp\left(\sinh(x_j)\right)}
+			{\pi\left(1+2\left(\exp(\sinh(x_j))\right)^{\alpha}\cos\left(\frac{\pi}{2} \alpha\right)+\left(\exp(\sinh(x_j))\right)^{2\alpha}\right)},\\
+			\lambda_j=&\exp(2\sinh(x_j)).
+		\end{aligned}
+		\label{wl_q_DE_im}
+	\end{equation}
+\end{itemize}
+
+\subsection{对于$\alpha \rightarrow 0$的改进算法}
+\esubsection{The approximation of $(qI+A^{\alpha})^{-1}$( $\alpha \rightarrow 0$)}
+在本节中, 我们主要改善 $\alpha \rightarrow 0$ 时近似效果不佳的问题, 前文已经分析了准确度不高的原因, 本节参考\(A^{-\alpha}\)算子的方法, 将算子分成两部分：
+\begin{equation}
+	\begin{aligned}
+		&(I+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\infty}\frac{s^{\alpha}(s{I}+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\underbrace{\frac{\sin(\pi \alpha)}{\pi}\int_0^{\sigma}\frac{s^{\alpha}(s{I}+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds}_{(I+A^{\alpha})^{-1}_1}/
+		+\underbrace{\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha}(s{I}+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds}_{(I+A^{\alpha})^{-1}_2}.
+	\end{aligned}
+	\label{jg_q1}
+\end{equation}
+
+\((I+A^{\alpha})_1^{-1}\)为常规部分, 在\(\alpha \rightarrow 0\)时, 该部分不含有奇性, 使用常见的数值积分可以达到理想的精度；\((I+A^{\alpha})_2^{-1}\)为奇点部分, 可以通过对该部分采用不同的计算方法来提高精确度. 
+
+接下来, 我们将分别探讨对\((I+A^{\alpha})_1^{-1}\)和\((I+A^{\alpha})_2^{-1}\)的精确积分近似,使得
+\begin{equation}\label{key}
+	_IR_Q^{\alpha}[ A]=\sum_{j=1}^{Q_1}w^{(1)}_j(\lambda^{(1)}_jI+A)^{-1}+\sum_{j=1}^{Q_2}w^{(2)}_j(\lambda^{(2)}_jI+A)^{-1},
+\end{equation}
+并最终转换成\eqref{1_Ah}的形式.
+
+
+\subsubsection{ 1. $(I+A^{\alpha})^{-1}_1$的近似}
+由于该部分在\(\alpha\rightarrow 0\)的时候不含有奇性，这里使用常见的数值积分（Gauss-Jacobi积分公式, 梯形积分公式等）都可以达到高精度. 这里我们采用Gauss-Jacobi积分公式。
+
+令$s=\sigma(1+\hat{x})/2$(其中$\hat{x}\in (-1,1)$), 改变换将积分区间更改为$(-1, 1)$. 
+\begin{equation}
+	\begin{aligned}
+		(I+A^{\alpha})^{-1}_1&=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\sigma}\frac{s^{\alpha}(s{I}+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{-1}^{1}\frac{\left(\frac{\sigma(1+\hat{x})}{2}\right)^{\alpha}\left(\frac{\sigma(1+\hat{x})}{2}+{A}\right)^{-1}\frac{\sigma}{2}}{1+2\left(\frac{\sigma(1+\hat{x})}{2}\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma(1+\hat{x})}{2}\right)^{2\alpha}}d\hat{x}\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{-1}^{1}\frac{\left(\frac{\sigma}{2}\right)^{\alpha+1}(1+\hat{x})^{\alpha}\left(\frac{\sigma}{2}(1+\hat{x})+{A}\right)^{-1}}{1+2\left(\frac{\sigma}{2}(1+\hat{x})\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma}{2}(1+\hat{x})\right)^{2\alpha}}d\hat{x}.
+	\end{aligned}
+	\label{SE0_q1}
+\end{equation}
+
+将雅可比-高斯正交法应用于$(I+A^{\alpha})^{-1}_1$得到近似:
+\begin{equation}
+	(I+A^{\alpha})^{-1}_1 =\sum_{j=1}^{N}w^{(1)}_j(\lambda^{(1)}_jI+A)^{-1},
+	\label{SE0_q1}
+\end{equation}
+其中
+\begin{equation}
+	\begin{aligned}
+		& w_j^{(1)}=\frac{\sin(\pi\alpha)}{\pi}(\frac{\sigma}{2})^{1+\alpha}\frac{\hat{w}_j}{1+2\left(\frac{\sigma}{2}(1+\hat{x}_j)\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma}{2}(1+\hat{x}_j)\right)^{2\alpha}}, \\
+		& \lambda_j^{(1)}=\frac{\sigma}{2}(1+\hat{x}_j). 
+	\end{aligned}
+	\label{lw_SE0_q1}
+\end{equation}
+
+$\hat{x}_j$ 与 $\hat{w}_j$ 分别代表了针对权函数 $(1+\hat{x})^{\alpha}$ 的标准雅可比-高斯求积法中的节点与权重. 这些节点和权重经过预先计算, 并且专门适用于区间 $(-1, 1)$. 
+
+
+\subsubsection{ 2. $(I+A^{\alpha})^{-1}_2$的近似}
+同上章处理算子\(A_2\)的方法一样，我们做对积分做如下变换：
+\begin{equation}
+	\begin{aligned}
+		&(I+A^{\alpha})^{-1}_2
+		=\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+A-A)(s+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds
+		-\frac{\sin(\pi \alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=w_0^{(2)}
+		-\underbrace{\frac{\sin(\pi \alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{1+2s^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds}_{(I+B^{\alpha})^{-1}_2}.
+	\end{aligned}
+	\label{q2}
+\end{equation}
+其中
+\begin{equation}
+	w_0^{(2)}=\frac{\sin(\pi \alpha)}{\pi}
+	{{\ln \left(\frac{\sigma^{\alpha}+\sqrt{\cos \left(\pi\,\alpha \right)-1}\,\sqrt{\cos
+					\left(\pi\,a\right)+1}\,+\cos \left(\pi\,a\right)\,}{\sigma^{\alpha}-\sqrt{\cos \left(\pi\,\alpha\right)-1}\,\sqrt{\cos \left(\pi
+					\,\alpha\right)+1}\,+\cos \left(\pi\,\alpha \right)\,}\right)}\over{2\,\alpha\,
+			\sqrt{\cos \left(\pi\,\alpha\right)-1}\,\sqrt{\cos \left(\pi\,\alpha\right)+1}.
+			\,}}
+\end{equation}
+
+观察\((I+B^{\alpha})^{-1}_2\)可知，该积分对于\(\alpha \rightarrow 0\)在任何情形下都可积。特别地，若\(\sigma>>1\),则理论上，该函数对任何\(\alpha\in(0,1)\)都可积。 对\((I+B^{\alpha})^{-1}_2\)进行积分有
+\begin{equation}\label{key}
+	(I+B^{\alpha})^{-1}_2=A\sum_{j=1}^Q \hat{w}^{(2)}_j(\hat{\lambda}^{(2)}_j+A)^{-1}.
+\end{equation}
+
+最终
+\begin{equation}\label{key}
+	\begin{aligned}
+		(I+A^{\alpha})^{-1}_2&=w_0^{(2)}-
+		A\sum_{j=1}^Q \hat{w}^{(2)}_j(\hat{\lambda}^{(2)}_j+A)^{-1}\\
+		&=\frac{\sin(\pi \alpha)}{\alpha\pi}\sigma^{-\alpha}-
+		\sum_{j=1}^Q \hat{w}^{(2)}_j+\sum_{j=1}^Q \hat{w}^{(2)}_j\hat{\lambda}^{(2)}_j(\hat{\lambda}^{(2)}_j+A)^{-1}\\
+		&=\sum_{j=1}^{Q_2}w^{(2)}_j(\lambda^{(2)}_jI+A)^{-1}
+	\end{aligned}
+\end{equation}
+其中
+\begin{equation}\label{key}
+	\begin{aligned}
+		&w_1^{(2)}=	\left(w_0^{(2)}-
+		\sum_{j=1}^Q \hat{w}^{(2)}_j\right)W,\quad
+		\lambda_1^{(2)}=W,\quad W=10^{100}\\
+		&w_j^{(2)}=\hat{w}^{(2)}_j\hat{\lambda}^{(2)}_j,\quad\lambda_j^{(2)}=\hat{\lambda}^{(2)}_j,\quad j=2,\dotsb,Q_2,\quad Q_2=Q+1.
+	\end{aligned}
+\end{equation}
+
+接下来, 我们展示几种对\((I+B^{\alpha})^{-1}_2\)的近似方法. 
+
+
+
+\textbf{1. 基于SE变换的梯形公式}
+
+使用变换\(s=e^{x}+\sigma\)可以将积分区间变换到\((-\infty,+\infty)\),将积分函数变为
+\begin{equation}\label{function_SE0}
+	(I+A^{\alpha})^{-1}_2=\frac{\sin(\pi\alpha)}{\pi}A\int_{-\infty}^{\infty}\frac{(e^{ x}+\sigma)^{\alpha-1}((e^{ x}+\sigma)+{A})^{-1} e^{ x}}{1+2(e^{x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{ x}+\sigma)^{2\alpha}}ds.
+\end{equation}
+
+定义被积函数\(F(x)\),并在图$\ref{pfunction_SE0}$中展示了\(\sigma=10^{-10}\)下不同\(\alpha,A\)下的被积函数的图像
+\begin{equation}
+	F(x)=\frac{\sin(\pi\alpha)}{\pi}A\frac{(e^{ x}+\sigma)^{\alpha-1} e^{ x}((e^{ x}+\sigma)+{A})^{-1}}{1+2(e^{ x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{ x}+\sigma)^{2\alpha}}.
+	\label{function_SE_alpha0_q}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{function_SE0sigma1}
+	\caption{\(\sigma=1\)下不同$A$和$\alpha$下的被积函数$F_1(x)$ \eqref{function_SE_alpha0_q}}
+	\label{pfunction_SE0}
+\end{figure}
+
+使用梯形公式
+\begin{equation}
+	\begin{aligned}
+		&\frac{\sin(\pi\alpha)}{\pi}A\int_{-\infty}^{\infty}\frac{(e^{ x}+\sigma)^{\alpha-1}((e^{ x}+\sigma)+{A})^{-1} e^{ x}}{1+2(e^{x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{ x}+\sigma)^{2\alpha}}ds\\
+		= & A\sum_{j=1}^Q \hat{w}^{(2)}_j(\hat{\lambda}^{(2)}_j+A)^{-1},
+	\end{aligned}
+\end{equation}
+其中
+\begin{equation}
+	\begin{aligned}
+		&\hat{w}^{(2)}_j=\frac{\sin(\pi\alpha)}{\pi}h\frac{(e^{ x_j}+\sigma)^{\alpha-1} e^{ x_j}}{1+2(e^{ x_j}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{ x_j}+\sigma)^{2\alpha}},\\
+		&\hat{\lambda}^{(2)}_j=e^{ x_j}+\sigma.
+	\end{aligned}
+\end{equation}
+其中$x_j=x_{\min}+jh$, $h=(x_{\max}-x_{\min})/Q$, $Q$ 为正整数.  可通过算法\ref{determine-bound}确定 $x_{\min}, x_{\max}$. 
+
+下面我们给出SE方法的收敛半径：
+\begin{theorem}
+	设 \( R(A) \) 表示 SE 方法的收敛半径, 则 
+	\begin{equation}
+		R(A)=\frac{1}{2}\min\left\{
+		\pi,\text{Im}\left\{\ln\left(e^{\frac{\pi}{\alpha}i\pm \pi i-\sigma}\right)\right\}
+		\right\}.
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	收敛半径为方程\(e^x+\sigma=0,e^x+\sigma+A=0,1+2(e^x+\sigma)^{\alpha}\cos(\pi \alpha)+(e^x+\sigma)^{2\alpha}=0\) 的解的最小虚部，解方程得：
+	\begin{equation}
+		\left\{
+		\begin{aligned}
+			&x=\pi i+\ln(\sigma)\\
+			&x=\pi i+\ln(\sigma+A)\\
+			&x=\ln(e^{\frac{\pi}{\alpha}\pm \pi i}-\sigma)
+		\end{aligned}\right.
+	\end{equation}
+	从而
+	\begin{equation}
+		R(A)=\frac{1}{2}\min\left\{
+		\pi,\text{Im}\left\{\ln\left(e^{\frac{\pi}{\alpha}i\pm \pi i-\sigma}\right)\right\}
+		\right\}.
+	\end{equation}
+\end{proof}
+
+\textbf{2. 基于DE变换的梯形公式}
+
+
+使用变换\(s=\exp(\sinh x)+\sigma\)可以将积分区间变换到\((-\infty,+\infty)\),将积分函数变为
+\begin{equation}
+	\begin{aligned}
+		&(I+A^{\alpha})^{-1}_2=
+		\frac{\sin(\pi\alpha)}{\pi}A\int_{-\infty}^{\infty}
+		\frac{ \cosh xe^{\sinh x}(e^{\sinh x}+\sigma)^{\alpha-1}(e^{\sinh x}+\sigma+{A})^{-1}}{1+2(e^{\sinh x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\sinh x}+\sigma)^{2\alpha}} ds.
+	\end{aligned}
+\end{equation}
+
+定义被积函数\(F(x)\),并在图$\ref{pfunction_DE0}$中展示了\(\sigma=10^{-10}\)下不同\(\alpha,A\)下的被积函数的图像
+\begin{equation}\label{function_DE0}
+	\begin{aligned}
+		&F(x)=\frac{\sin(\alpha\pi)}{\pi}A
+		&\frac{ \cosh xe^{\sinh x}(e^{\sinh x}+\sigma)^{\alpha-1}(e^{\sinh x}+\sigma+{A})^{-1}}{1+2(e^{\sinh x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\sinh x}+\sigma)^{2\alpha}}.
+	\end{aligned}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{function_DE0}
+	\caption{\(\sigma=10^{-10}\)下不同$A$和$\alpha$下的被积函数$F_1(x)$ \eqref{function_DE0}}
+	\label{pfunction_DE0}
+\end{figure}
+
+使用梯形公式
+\begin{equation}
+	\begin{aligned}
+		&\frac{\sin(\pi\alpha)}{\pi}A\int_{-\infty}^{\infty}
+		\frac{ \cosh xe^{\sinh x}(e^{\sinh x}+\sigma)^{\alpha-1}(e^{\sinh x}+\sigma)+{A})^{-1}}{1+2(e^{\sinh x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\sinh x}+\sigma)^{2\alpha}} ds\\
+		= & A\sum_{j=1}^Q \hat{w}^{(2)}_j(\hat{\lambda}^{(2)}_j+A)^{-1},
+	\end{aligned}
+\end{equation}
+其中
+\begin{equation}
+	\begin{aligned}
+		& w_j=h\frac{\sin(\alpha\pi)}{\pi}\\
+		&\frac{ \cosh xe^{\sinh x_j}(e^{\sinh x_j}+\sigma)^{\alpha-1}(e^{\sinh x_j}+\sigma)+{A})^{-1}}{1+2(e^{\sinh x_j}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\sinh x_j}+\sigma)^{2\alpha}} ,\\
+		& \lambda_j=\exp(\sinh x_j)+\sigma.
+	\end{aligned}
+	\label{lw_DE0_q}
+\end{equation}
+其中$x_j=x_{\min}+jh$, $h=(x_{\max}-x_{\min})/Q$, $Q$ 为正整数. $x_{\min}, x_{\max}$ 可通过算法\ref{determine-bound}确定,也可以由下式进行简单的估计 ：
+
+\begin{equation}
+	\begin{aligned}
+		F(x) &\rightarrow \frac{\sin(\alpha\pi)}{\pi}A \frac{1}{2} \exp(-(\alpha+1)\frac{e^x}{2}), \quad(x\rightarrow +\infty)\\
+		F(x) & \rightarrow \frac{\sin(\alpha\pi)}{\pi}A \frac{}{2} \frac{\sigma^{\alpha-1}\exp(- e^{-x}/2)}{(\sigma+A)(1+2\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})} .\quad(x\rightarrow -\infty)
+	\end{aligned}
+\end{equation}
+
+为确保梯形公式的使用条件，需要满足下式
+\begin{equation}
+	\left\{
+	\begin{aligned}
+		& \frac{1}{2} \frac{\sin(\alpha\pi)}{\pi}A \exp\left(-(\alpha+1)\frac{1}{2}e^x\right)\leq \epsilon (1+A^{\alpha})^{-1}\\
+		&\frac{1}{2} \frac{\sin(\alpha\pi)}{\pi}A \frac{\sigma^{\alpha-1}\exp\left(-\frac{1}{2}e^{-x}\right)}{(\sigma+A)(1+2\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}\leq \epsilon (1+A^{\alpha})^{-1}\\
+		&\exp\left(-\frac{1}{2}e^{-x}\right)\le \frac{\sigma}{10}
+	\end{aligned}
+	\right.
+	\label{Conditions_DE0}
+\end{equation}
+
+基于上面的条件，我们可以初步估计 $x_{\min}$ 和 $x_{\max}$的值为：
+\begin{equation}
+	\left\{
+	\begin{aligned}
+		x_{\min}=&\min \left\{-\ln\left(-\frac{2\ln\left(\frac{2(\sigma+A_{\min})\epsilon\pi (1+2 \sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(1+A_{\min}^{\alpha})A_{\min} \sin(\pi \alpha)} \right)}{1}\right),\right.\\
+		&\left. \qquad  \qquad -\ln \left(-\frac{2\ln(\sigma/10)}{1}\right)\right\}\\
+		x_{\max}=&\ln\left(-\frac{2\ln(2\epsilon \pi A_{\max}^{-1}(1+A_{\max}^{\alpha})^{-1}/(\sin(\pi \alpha)))}{(\alpha+1)}\right)
+	\end{aligned}
+	\right.
+	\label{findminmax_DE0_q}
+\end{equation}
+下面我们给出SE方法的收敛半径：
+\begin{theorem}
+	设 \( R(A) \) 表示 DE 方法的收敛半径, 则 \(\)
+	\begin{equation}
+		\begin{aligned}
+			R(A)=&\frac{1}{2}\min\left\{
+			\sinh^{-1}(\pi i+\ln \sigma),\sinh^{-1}(\pi i+\ln(\sigma+A) ),\right.\\
+			&\left.\sinh^{-1}\left(\text{Im}\left\{\ln\left(e^{\frac{\pi}{\alpha}i\pm \pi i}-\sigma\right)\right)\right\}
+			\right\}.
+		\end{aligned}
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	收敛半径为方程\(e^{\sinh x}+\sigma=0,e^{\sinh x}+\sigma+A=0,1+2(e^{\sinh x}+\sigma)^{\alpha}\cos(\pi \alpha)+(e^{\sinh x}+\sigma)^{2\alpha}=0\) 的解的最小虚部，解方程得：
+	\begin{equation}
+		\left\{
+		\begin{aligned}
+			&x=\sinh^{-1}(\pi i+\ln \sigma)\\
+			&x=\sinh^{-1}(\pi i+\ln(\sigma+A) )\\
+			&x=\sinh^{-1}\left(\text{Im}\left\{\ln\left(e^{\frac{\pi}{\alpha}i\pm \pi i}-\sigma\right)\right\}\right).
+		\end{aligned}
+		\right.
+	\end{equation}
+	从而
+	\begin{equation}
+		\begin{aligned}
+			R(A)=&\frac{1}{2}\min\left\{
+			\sinh^{-1}(\pi i+\ln \sigma),\sinh^{-1}(\pi i+\ln(\sigma+A) ),\right.\\
+			&\left.\sinh^{-1}\left(\text{Im}\left\{\ln\left(e^{\frac{\pi}{\alpha}i\pm \pi i}-\sigma\right)\right)\right\}
+			\right\}.
+		\end{aligned}
+	\end{equation}
+\end{proof}
+
+
+
+
+
+
+\section{本章小结}
+\esection{Summary}

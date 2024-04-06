@@ -1,0 +1,966 @@
+\chapter{$(q+{A}^{\alpha})^{-1}$的近似}
+\echapter{Approximation of $(q+{A}^{\alpha})^{-1}$}
+
+Consider the numerical solution of the following equation:
+\begin{equation}
+	u_t + (-\Delta)^\alpha u = f
+\end{equation}
+
+First, discretizing the time direction yields:
+\begin{equation}
+	ut + (-\Delta)^\alpha u = f \rightarrow \frac{Uj - U{j-1}}{\tau} + (-\Delta)^\alpha Uj = F_j
+\end{equation}
+
+Further rearranging leads to:
+\begin{equation}
+	Uj = \left(\frac{1}{\tau} + (-\Delta)^\alpha\right)^{-1}\frac{U{j-1} + \tau Fj}{\tau} \rightarrow Uj = \left(q + (-\Delta)^\alpha\right)^{-1} \text{RHS}
+\end{equation}
+
+In the above equation, $U_j$ represents the numerical solution at time step $j$, $F_j$ represents the function value at time step $j$, $\tau$ denotes the time step size, $q = \frac{1}{\tau}$, and $\text{RHS}=\frac{U{j-1} + \tau Fj}{\tau}$ .
+
+The main problem to be addressed is the approximation of $\left(q+A^\alpha\right)^{-1}$, where $A$ represents the matrix representation of the Laplace operator after discretization.
+
+By Cauchy integral formula, we can get
+\begin{equation}
+(q+A^{\alpha})^{-1}=\frac{1}{2 \pi i} \int_T (q+s^{\alpha})^{-1}(s-A)^{-1} d s
+\label{q+A_alpha}
+\end{equation}
+
+Let's assume that the value of $\alpha$ does not generate singularities on the negative real axis, then we can cut along the negative real axis and get
+\begin{equation}
+	\begin{aligned}
+	(q+A^{\alpha})^{-1}&=\frac{1}{2\pi i}\int_{-\infty}^{0}((s+i 0)^{\alpha}+q)^{-1}(s-A)^{-1} d s\\&+\frac{1}{2 \pi i} \int_0^{-\infty}((s-i 0)^{\alpha}+q)^{-1}(s-A)^{-1} d s \\
+	&=\frac{1}{2 \pi i} \int_{-\infty}^0[((s+i 0)^{\alpha}+q)^{-1}-((s-i 0)^{\alpha}+q)^{-1}](s-A)^{-1} d s\\
+	&=-\frac{1}{2 \pi i} \int_{0}^{+\infty}[((-s+i 0)^{\alpha}+q)^{-1}-((-s-i 0)^{\alpha}+q)^{-1}](s+A)^{-1} d s\\
+	&=-\frac{1}{2 \pi i} \int_{0}^{+\infty}[((se^{i \pi})^{\alpha}+q)^{-1}-((se^{-i \pi})^{\alpha}+q)^{-1}](s+A)^{-1} d s\\
+	&=-\frac{1}{2 \pi i} \int_{0}^{+\infty}[(s^{\alpha}e^{i \pi \alpha}+q)^{-1}-(s^{\alpha}e^{-i \pi \alpha}+q)^{-1}](s+A)^{-1} d s\\
+\end{aligned}
+\end{equation}
+
+From
+\begin{equation}
+	\begin{aligned}
+	&e^{i \pi \alpha}+e^{- i \pi \alpha}\\
+	=&\cos(\pi \alpha)+i\sin(\pi\alpha)+\cos(-\pi \alpha)-i \sin(\pi \alpha)\\
+	=&2\cos(\pi \alpha)
+\end{aligned}
+\end{equation}
+
+we can get
+\begin{equation}
+	\begin{aligned}
+	\frac{1}{s^{\alpha}e^{i \pi \alpha}+q}-\frac{1}{s^{\alpha}e^{-i \pi \alpha}+q}&=\frac{s^{\alpha}e^{-i \pi \alpha}-s^{\alpha}e^{i \pi \alpha}}{(s^{\alpha}e^{i \pi \alpha}+q)(s^{\alpha}e^{-i \pi \alpha}+q)}\\
+	&=\frac{s^{\alpha}(e^{-i \pi \alpha}-e^{i \pi \alpha})}{(s^{\alpha}e^{i \pi \alpha}+q)(s^{\alpha}e^{-i \pi \alpha}+q)}\\
+	&=\frac{-2 i \sin(\pi \alpha)s^{\alpha}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}
+\end{aligned}
+\end{equation}
+
+That is
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\infty}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds
+	\label{original_q}
+\end{equation}
+
+Now, let us consider the singularity $s=(-q)^{\frac{1}{\alpha}}e^{\pi i/{\alpha}}q^{1/{\alpha}}=(\cos(\pi/{\alpha})+i \sin(\pi/{\alpha}))q^ {1/\alpha}$
+
+If the singularity is on the negative real axis, it needs to satisfy:
+\begin{equation}
+\begin{aligned}
+&\cos(\pi/\alpha)<0\\
+&\sin(\pi/{\alpha})=0
+\end{aligned}
+\end{equation}
+
+i.e. $\alpha=1/k,k$ is odd, and by $\eqref{original_q}$, the integral holds at these points.
+
+We want to seek a suitable summation formula to approximate the integral for constant fractional order $\alpha$ ,i.e.,
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}
+\end{equation}
+
+\section{基于Single-Exponential (SE)的$(q+{A}^{\alpha})^{-1}$近似}
+\esection{Single-Exponential (SE) formulas }
+
+By using  $s=e^{\mu x}$ in $\eqref{original_q}$ \cite{Harizanov2020ASO} , we can get $s'(x)=\mu e^{\mu x}$ and
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}\frac{e^{\alpha\mu x}(e^{\mu x} I+A)^{-1}\mu e^{\mu x}}{q^2+2qe^{\alpha\mu x}\cos(\pi\alpha)+e^{2\alpha\mu x}} dx
+	\label{expu_q}
+\end{equation}
+
+Define the integrand
+\begin{equation}
+	f(x)=\frac{e^{\alpha\mu x}(e^{\mu x} I+A)^{-1}\mu e^{\mu x}}{q^2+2qe^{\alpha\mu x}\cos(\pi\alpha)+e^{2\alpha\mu x}}
+	\label{function_SE_q}
+\end{equation}
+
+For different $\alpha$ and $A$, $\mu=1$, $q=100$, we plot the integrand f(x) in Figure $\ref{pfunction_SE_q}$.
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_1}}
+~~
+\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_2}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_3}}
+~~
+\subfloat[$\alpha=0.4$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_4}}\\
+\subfloat[$\alpha=0.7$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_5}}
+~~
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_6}}
+~~
+\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_7}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.24\textwidth]{qfunction_SE_q_8}}
+\caption{The integrand f(x)in $\eqref{function_SE_q}$ for $q=100,\mu=1$}
+\label{pfunction_SE_q}
+\end{figure}
+
+The trapezoidal rule for approximating $\eqref{expu_q}$ is
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}f(x)dx\approx \frac{\sin(\pi \alpha)}{\pi} h \sum_{j=-\infty}^{+\infty} f(jh)
+	\label{tr_q}
+\end{equation}
+
+where $h>0$ is a step size. In practice, we need to truncate $\eqref{tr_q}$ to obtain
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}\approx \frac{\sin(\pi \alpha)}{\pi} h\sum_{j=-\infty}^{+\infty} f(jh)
+	=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}
+	\label{SE_q}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha)}{\pi}\frac{\mu e^{(1+\alpha)\mu x_j}}{q^2+2qe^{\alpha \mu x_j}\cos(\pi\alpha)+e^{2\alpha \mu x_j}}\\
+		&\lambda_j=e^{\mu x_j}
+	\end{aligned}
+\label{lw_SE_q}
+\end{equation}
+
+$x_j=x_{\min}+jh$,$h=(x_{\max}-x_{\min})/Q$, $Q>1$ is a positive integer, and $x_{\min}$ and $x_{\max}$ are chosen such that
+\begin{equation}
+	|f(x)|/\|f(x)\|_{\infty}\ge \epsilon ,\quad \forall x\in[x_{\min},x_{\max}]
+	\label{findMN}
+\end{equation}
+
+We can also give approximate estimates of $x_{\min}$ and $x_{\max}$ in advance.
+
+It's easy to find
+\begin{equation}
+	\begin{aligned}
+		& f(x)\rightarrow \frac{\mu e^{(1+\alpha)\mu x}}{e^{\mu x}e^{2\alpha\mu x}}=\mu e^{-\alpha \mu x} \quad (x \rightarrow +\infty)\\
+		& f(x)\rightarrow \frac{\mu e^{(1+\alpha)\mu x}}{Aq^2} \quad (x \rightarrow -\infty)
+	\end{aligned}
+	\label{AS_SE}
+\end{equation}
+
+Let $\mu e^{-\alpha \mu x}\leq \epsilon (q+{A}^{\alpha})^{-1}$, the tolerance $\epsilon$ is small enough. We can get
+\begin{equation}
+	x\geq -\frac{\ln(\epsilon (q+{A}^{\alpha})^{-1}/\mu)}{\alpha \mu}
+\end{equation}
+
+Let $\frac{\mu e^{(1+\alpha)\mu x}}{Aq^2}  \leq \epsilon (q+{A}^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\leq \frac{\ln(\epsilon q^2 A (q+{A}^{\alpha})^{-1}/\mu)}{(1+\alpha)\mu}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+	\begin{aligned}
+		&x_{\min}= \frac{\ln(\epsilon q^2 A_{\min} (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{(1+\alpha)\mu}\\
+		&x_{\max}=-\frac{\ln(\epsilon (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\alpha \mu}
+	\end{aligned}
+\label{findminmax_SE_q}
+\end{equation}
+
+Here and in the following, we always take $\epsilon=10^{-16}$ in numerical simulations and test the relative error $e(t)$ by
+\begin{equation}
+	e(t)=\left|\frac{(q+{A}^{\alpha})^{-1}-\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}}{(q+{A}^{\alpha})^{-1}}\right|
+	\label{error_q}
+\end{equation}
+
+We select 100 points from 1 to 1000 at equal intervals of $A$, $q=100$,  $\epsilon=10^{-16}$ For different $\alpha$ and $Q$, the results are shown in Figure $\ref{E_SE_q}$
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.25\textwidth]{qError_SE_1}}
+	~~
+	\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.25\textwidth]{qError_SE_2}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.25\textwidth]{qError_SE_3}}
+	~~
+	\subfloat[$\alpha=0.4$]{\includegraphics[width=0.25\textwidth]{qError_SE_4}}\\
+	~~
+	\subfloat[$\alpha=0.7$]{\includegraphics[width=0.25\textwidth]{qError_SE_5}}
+	~~
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.25\textwidth]{qError_SE_6}}
+	~~
+	\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.25\textwidth]{qError_SE_7}}
+	~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.25\textwidth]{qError_SE_8}}
+	\caption{The Relative errors with different $\alpha$ and $Q$}
+	\label{E_SE_q}
+\end{figure}
+
+\section{基于 Double-Exponential (DE)的$(q+{A}^{\alpha})^{-1}$近似}
+\esection{ Double-Exponential (DE) formulas}
+
+By using $s=\exp(\mu\sinh x)$ in $\eqref{original_q}$,  we can get $s'(x)=\mu \cosh x \exp(\mu \sinh x)$ and
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}
+		\frac{\mu\cosh(x)e^{(1+\alpha)\mu\sinh x}(e^{\mu\sinh x}+A)^{-1}}{q^2+2qe^{\mu \alpha \sinh x}\cos(\pi\alpha)+e^{2\mu\alpha\sinh x}}dx
+	\label{de_q}
+\end{equation}
+
+Define the integrand
+\begin{equation}
+	f(x)=\mu\cosh(x)\frac{\exp((1+\alpha)\mu\sinh x)(\exp(\mu\sinh x){I}+A)^{-1}}{(q^2+2q\exp(\mu \alpha \sinh x)\cos(\pi\alpha)+\exp(2\mu\alpha\sinh x))}
+	\label{function_DE_q}
+\end{equation}
+
+For different $\alpha$ and $A$,$\mu=\pi/2$ ,$q=100$, we plot the integrand f(x) in Figure $\ref{pfunction_DE_q}$.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_1}}
+	~~
+	\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_2}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_3}}
+	~~
+	\subfloat[$\alpha=0.4$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_4}}\\                 
+	\subfloat[$\alpha=0.7$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_5}}
+	~~
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_6}}
+	~~
+	\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_7}}
+	~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.25\textwidth]{qfunction_DE_q_8}}
+	\caption{The integrand f(x) in $\eqref{function_DE_q}$ for $\mu=\pi/2,q=100$}
+	\label{pfunction_DE_q}
+\end{figure}
+
+The trapezoidal rule for approximating $\eqref{de_q} $ is
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}\approx \frac{\sin(\pi \alpha)}{\pi} h\sum_{j=-\infty}^{+\infty} f(jh)=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}
+	\label{DE_q}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha)}{\pi}\frac{\mu\cosh x_j\exp((1+\alpha)\mu\sinh x_j )}{(q^2+2q\exp(\mu \alpha \sinh x_j)\cos(\pi\alpha)+\exp(2\mu\alpha\sinh x_j))}\\
+		&\lambda_j=\exp(\mu\sinh x_j)
+	\end{aligned}
+\label{lw_DE_q}
+\end{equation}
+
+$x_j=x_{\min}+jh$,$h=(x_{\max}-x_{\min})/Q$, $Q>1$ is a positive integer, and $x_{\min}$ and $x_{\max}$ are chosen such that $\eqref{findMN}$ holds. We can also give approximate estimates of $x_{\min}$ and $x_{\max}$ in advance.
+
+It's easy to find
+\begin{equation}
+	\begin{aligned}
+		& f\left( x \right) \rightarrow
+		\frac{\mu}{2}e^x\frac{\exp \left( \left( 1+\alpha \right) \mu e^x/2 \right)}{\exp \left( \mu \text{e}^x/2 \right)\exp(\mu \alpha e^x)}
+		\rightarrow \frac{\mu}{2}\exp \left(  -\alpha \mu e^x /2\right)
+		\quad (x \rightarrow +\infty)\\
+		& f\left( x \right) \rightarrow 	 \frac{\mu}{2} e^{-x} \frac{\exp \left(-\frac{(\alpha+1)\mu e^{-x}}{2}\right)}{Aq^2} \rightarrow
+		\frac{\mu}{2 Aq^2}  \exp \left(-(\alpha+1)\mu \frac{e^{-x}}{2}\right)
+		\quad (x \rightarrow -\infty)\\
+	\end{aligned}
+	\label{AS_DE}
+\end{equation}
+
+Let $\frac{\mu}{2}\exp \left(  -\alpha \mu e^x /2\right) \leq \epsilon  (q+{A}^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\geq \ln\left(-\frac{2\ln(2\epsilon  (q+{A}^{\alpha})^{-1}/\mu)}{\mu \alpha}\right)
+\end{equation}
+
+Let $\frac{\mu}{2 Aq^2}  \exp \left(-(\alpha+1)\mu e^{-x}/2\right) \leq \epsilon  (q+{A}^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\leq -\ln\left(-\frac{2\ln(2\epsilon A q^2  (q+{A}^{\alpha})^{-1}/\mu)}{\mu(1+\alpha)}\right)
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+	\begin{aligned}
+		&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu \alpha}\right)\\
+		&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon A_{\min} q^2  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu(1+\alpha)}\right)
+	\end{aligned}
+\label{findminmax_DE_q}
+\end{equation}
+
+We take $A$ in the range 1-1000,, $q=100$  $\epsilon=10^{-16}$ and test the relative error $\eqref{error_q}$. For different $\alpha $ and $Q$, the results are shown in Figure $\ref{E_DE_q}$
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.25\textwidth]{qError_DE_1}}
+	~~
+	\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.25\textwidth]{qError_DE_2}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.25\textwidth]{qError_DE_3}}
+	~~
+	\subfloat[$\alpha=0.4$]{\includegraphics[width=0.25\textwidth]{qError_DE_4}}\\
+	\subfloat[$\alpha=0.7$]{\includegraphics[width=0.25\textwidth]{qError_DE_5}}
+	~~
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.25\textwidth]{qError_DE_6}}
+		~~
+	\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.25\textwidth]{qError_DE_7}}
+		~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.25\textwidth]{qError_DE_8}}
+	\caption{The Relative errors with different $\alpha$ and $Q$}
+	\label{E_DE_q}
+\end{figure}
+
+Now we summarize the algorithm based on the single-exponential transformation trapezoidal rule $\eqref{SE_q}$ and the algorithm based on the double-exponential transformation trapezoidal rule $\eqref{DE_q}$  for calculating $(q+A^{\alpha})^{-1}$ in Algorithm $\ref{alg:SEDE_q}$
+\begin{algorithm}[!h]
+	\caption{Approximation of $(q+A^{\alpha})^{-1}$ when $\alpha \not \rightarrow 0$ and $\alpha \not \rightarrow 1$}
+	\label{alg:SEDE_q}
+	\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+	\renewcommand{\algorithmicensure}{\textbf{Output:}}
+	\begin{algorithmic}[1]
+		\REQUIRE $A$, $\alpha$, $\epsilon$, $Q$, $\mu$, $q$ , Method %%input
+		\ENSURE $\sum_{j=0}^{Q}w_j(\lambda_j+A)^{-1}$    %%output
+		\IF{Method == SE}		
+		\STATE  Find endpoints $x_{min}$ and $x_{max}$ according to $\eqref{findminmax_SE_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&x_{\min}= \frac{\ln(\epsilon q^2 A_{\min} (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{(1+\alpha)\mu}\\
+				&x_{\max}=-\frac{\ln(\epsilon (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\alpha \mu}
+			\end{aligned}
+		\end{equation*}
+		\STATE  Calculate $\lambda$ and $w$ according to the instructions below $\eqref{lw_SE_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&w_j=h\frac{\sin(\pi \alpha)}{\pi}\frac{\mu e^{(1+\alpha)\mu x_j}}{q^2+2qe^{\alpha \mu x_j}\cos(\pi\alpha)+e^{2\alpha \mu x_j}}\\
+				&\lambda_j=e^{\mu x_j}
+			\end{aligned}
+		\end{equation*}
+		\ELSE[Method==DE]
+		\STATE  Find endpoints $x_{min}$ and $x_{max}$ according to $\eqref{findminmax_DE_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu \alpha}\right)\\
+				&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon A_{\min} q^2  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu(1+\alpha)}\right)
+			\end{aligned}
+		\end{equation*}
+		\STATE  Calculate $\lambda$ and $w$ according to the instructions below $\eqref{lw_DE_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&w_j=h\frac{\sin(\pi \alpha)}{\pi}\frac{\mu\cosh x_j e^{(1+\alpha)\mu\sinh x_j }}{(q^2+2q e^{\mu \alpha \sinh x_j}\cos(\pi\alpha)+e^{2\mu\alpha\sinh x_j})}\\
+				&\lambda_j=\exp(\mu\sinh x_j)
+			\end{aligned}
+		\end{equation*}
+		\ENDIF
+		\STATE  Calculate $(q+A^{\alpha})^{-1}$ by 
+		\begin{equation}
+			(q+{A}^{\alpha})^{-1}=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}
+		\end{equation}
+	\end{algorithmic}
+\end{algorithm}
+
+
+\section{$(q+A^{\alpha})^{-1}$ 的近似( $\alpha \rightarrow 1$)}
+\esection{\textbf{The approximation of $(q+A^{\alpha})^{-1}$ when $\alpha \rightarrow 1$}}
+
+It can be seen from  Figure $\ref{E_SE_q}$ and $\ref{E_DE_q}$ , the accuracy of using the trapezoid formula is undesirable in the case of $\alpha \rightarrow 1$. Through the experimental analysis, it can be found that $\alpha \rightarrow 1$ can achieve relatively good accuracy when a large number of discrete points Q are selected, but too many discrete points are obviously not in line with our requirements.
+
+In addition, the reason for the large error at $\alpha \rightarrow 1$ is not that the integral is $0 \times \infty$ at $x \rightarrow 0$ or $x \rightarrow \infty$ , but that the denominator of the integrand at $\alpha \rightarrow 1$ is approximated by $(s-q)^{2}$, thus producing singularity at $s=q$.
+
+In order to improve the accuracy at $\alpha \rightarrow 1$, We use the following integral form:
+\begin{equation}
+		(q+A^{\alpha})^{-1}=(q+(A^2)^{\alpha/2})^{-1}
+		=\frac{\sin(\pi \alpha /2)}{\pi}\int_0^{\infty}\frac{s^{\alpha/2}(sI+A^2)^{-1}}{q^2+2qs^{\alpha/2}\cos(\pi \alpha/2)+s^{\alpha}}ds	
+	\label{se1_q}
+\end{equation}
+
+
+\textbf{1. SE transformation}
+
+By using  $s=e^{\mu x}$ in $\eqref{se1_q}$  , we can get $s'(x)=\mu e^{\mu x}$ and
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha/2)}{\pi}\int_{-\infty}^{+\infty}\frac{e^{\alpha\mu x/2}(e^{\mu x} I+A^2)^{-1}\mu e^{\mu x}}{q^2+2qe^{\alpha\mu x/2}\cos(\pi\alpha/2)+e^{\alpha\mu x}} dx
+	\label{expu_se1_q}
+\end{equation}
+
+Define the integrand
+\begin{equation}
+	f(x)=\frac{e^{\alpha\mu x/2}(e^{\mu x} I+A^2)^{-1}\mu e^{\mu x}}{q^2+2qe^{\alpha\mu x/2}\cos(\pi\alpha/2)+e^{\alpha\mu x}}
+	\label{function_SE1_q}
+\end{equation}
+
+For different $\alpha$ and $A$, $\mu=1$, we plot the integrand f(x) in Figure $\ref{function_SE2_q}$.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{qfunction_SE1_1}}
+	~~
+	\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE1_2}}
+	~~
+	\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE1_3}}\\
+	\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE1_4}}
+	~~
+	\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE1_5}}
+	~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE1_6}}
+	\caption{The integrand f(x) $\eqref{function_SE1_q}$, for different $\sigma,\mu=1$}
+	\label{function_SE2_q}
+\end{figure}
+
+The trapezoidal rule for approximating $\eqref{expu_se1_q}$ is
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha/2)}{\pi}\int_{-\infty}^{+\infty}f(x)dx\approx \frac{\sin(\pi \alpha/2)}{\pi} h \sum_{j=-\infty}^{+\infty} f(jh)
+	\label{tr_se1_q}
+\end{equation}
+
+where $h>0$ is a step size. In practice, we need to truncate $\eqref{tr_se1_q}$ to obtain
+\begin{equation}
+	\begin{aligned}
+		(q+{A}^{\alpha})^{-1}\approx & \frac{\sin(\pi \alpha/2)}{\pi} h\sum_{j=-\infty}^{+\infty} f(jh)
+		=\sum_{j=0}^{Q}w_j(\lambda_jI+A^2)^{-1}\\
+		=&\sum_{j=0}^{Q}w_j\left[\left(\sqrt{\lambda_j}+iA\right)\left(\sqrt{\lambda_j}-iA\right)\right]^{-1}\\
+		=&\sum_{j=0}^{Q}w_j\left(\frac{1}{\sqrt{\lambda_j}+iA}+\frac{1}{\sqrt{\lambda_j}+iA}\right)\frac{1}{2\sqrt{\lambda_j}}\\
+		&\sum_{j=0}^{Q}\frac{w_j}{2\sqrt{\lambda_j}}\left[\left(\sqrt{\lambda_j}+iA\right)^{-1}+\left(\sqrt{\lambda_j}-iA\right)^{-1}\right]
+		\label{trap_se1}
+	\end{aligned}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha/2)}{\pi}\frac{\mu e^{(1+\alpha/2)\mu x_j}}{q^2+2qe^{\alpha/2 \mu x_j}\cos(\pi\alpha/2)+e^{\alpha \mu x_j}}\\
+		&\lambda_j=e^{\mu x_j}
+	\end{aligned}
+\label{lw_SE1_q}
+\end{equation}
+
+$x_j=x_{\min}+jh$,$h=(x_{\max}-x_{\min})/Q$, $Q>1$ is a positive integer. We can also give approximate estimates of $x_{\min}$ and $x_{\max}$ in advance.
+
+It's easy to find
+\begin{equation}
+	\begin{aligned}
+		& f(x)\rightarrow \frac{\mu e^{(1+\alpha/2)\mu x}}{e^{\mu x}e^{\alpha\mu x}}=\mu e^{-\alpha/2 \mu x} \quad (x \rightarrow +\infty)\\
+		& f(x)\rightarrow \frac{\mu e^{(1+\alpha/2)\mu x}}{A^2q^2} \quad (x \rightarrow -\infty)
+	\end{aligned}
+	\label{AS_SE1}
+\end{equation}
+
+Let $\mu e^{-\alpha/2 \mu x}\leq \epsilon (q+{A}^{\alpha})^{-1}$, the tolerance $\epsilon$ is small enough. We can get
+\begin{equation}
+	x\geq -\frac{\ln(\epsilon (q+{A}^{\alpha})^{-1}/\mu)}{\alpha \mu/2}
+\end{equation}
+
+Let $\frac{\mu e^{(1+\alpha/2)\mu x}}{A^2 q^2}  \leq \epsilon (q+{A}^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\leq \frac{\ln(\epsilon q^2 A^2 (q+{A}^{\alpha})^{-1}/\mu)}{(1+\alpha/2)\mu}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+	\begin{aligned}
+		&x_{\min}= \frac{\ln(\epsilon q^2 A^2_{\min} (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{(1+\alpha/2)\mu}\\
+		&x_{\max}=-\frac{\ln(\epsilon (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\alpha \mu/2}
+	\end{aligned}
+\label{findminmax_SE1_q}
+\end{equation}
+
+We take $A$ in the range 1-1000,  $\epsilon=10^{-16}$ and test the relative error $\eqref{error_q}$. For different $\alpha $, the results are shown in Figure $\ref{E_JG_SE_q}$. It can be seen that the error is within our ideal range.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{qError_SE1_1}}
+	~~
+	\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{qError_SE1_2}}
+	~~
+	\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{qError_SE1_3}}\\
+	\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{qError_SE1_4}}
+	~~
+	\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{qError_SE1_5}}
+	~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{qError_SE1_6}}
+	\caption{The error of SE1}
+	\label{E_JG_SE_q}
+\end{figure}
+
+\textbf{ 2.DE transformation}
+
+By using $s=\exp(\mu\sinh x)$ in $\eqref{se1_q}$,  we can get $s'(x)=\mu \cosh x \exp(\mu \sinh x)$ and
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}=\frac{\sin(\pi \alpha/2)}{\pi}\int_{-\infty}^{+\infty}
+	\frac{\mu\cosh(x)e^{(1+\alpha/2)\mu\sinh x}(e^{\mu\sinh x}{I}+A^2)^{-1}}{q^2+2q e^{\mu \alpha/2 \sinh x}\cos(\pi\alpha/2)+e^{\mu\alpha\sinh x}}dx
+	\label{de1_q}
+\end{equation}
+
+Define the integrand
+\begin{equation}
+	f(x)=\mu\cosh(x)\frac{\exp((1+\alpha/2)\mu\sinh x)(\exp(\mu\sinh x){I}+A^2)^{-1}}{(q^2+2q\exp(\mu \alpha /2\sinh x)\cos(\pi\alpha/2)+\exp(\mu\alpha\sinh x))}
+	\label{function_DE_alpha1_q}
+\end{equation}
+
+For different $\alpha$ and $A$,$\mu=\pi/2$ we plot the integrand f(x) in Figure$\ref{function_DE2_q}$.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{qfunction_DE1_1}}
+	~~
+	\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE1_2}}
+	~~
+	\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE1_3}}\\
+	\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE1_4}}
+	~~
+	\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE1_5}}
+	~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE1_6}}
+	\caption{The integrand f(x)in $\eqref{function_DE_alpha1_q}$ for different $\sigma,\mu=\pi/2$}
+	\label{function_DE2_q}
+\end{figure}
+
+The trapezoidal rule for approximating $\eqref{de1_q} $ is the same as $\eqref{trap_se1}$,and
+\begin{equation}
+	(q+{A}^{\alpha})^{-1}\approx \frac{\sin(\pi \alpha)}{\pi} h\sum_{j=-\infty}^{+\infty} f(jh)=\sum_{j=0}^{Q}w_j(\lambda_jI+A^2)^{-1}
+	\label{DE1_q}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		&w_j=h\frac{\sin(\pi \alpha/2)}{\pi}\mu\cosh x_j\frac{e^{(1+\alpha/2)\mu\sinh x_j }}{(q^2+2q e^{\mu \alpha/2 \sinh x_j}\cos(\pi\alpha/2)+e^{\mu\alpha\sinh x_j})}\\
+		&\lambda_j=\exp(\mu\sinh x_j)
+	\end{aligned}
+\label{lw_DE1_q}
+\end{equation}
+
+$x_j=x_{\min}+jh$,$h=(x_{\max}-x_{\min})/Q$, $Q>1$ is a positive integer, and $x_{\min}$ and $x_{\max}$ are chosen such that $\eqref{findMN}$ holds. We can also give approximate estimates of $x_{\min}$ and $x_{\max}$ in advance.
+
+It's easy to find
+\begin{equation}
+	\begin{aligned}
+		& f\left( x \right) \rightarrow
+		\frac{\mu}{2}e^x\frac{\exp \left( \left( 1+\alpha/2 \right) \mu e^x/2 \right)}{\exp \left( \mu \text{e}^x/2 \right)\exp(\mu \alpha/2 e^x)}
+		\rightarrow \frac{\mu}{2}\exp \left(  -\alpha \mu e^x /4\right)
+		\quad (x \rightarrow +\infty)\\
+		& f\left( x \right) \rightarrow 	 \frac{\mu}{2} e^{-x} \frac{\exp \left(-(\alpha/2+1)\mu e^{-x}/2\right)}{A^2q^2} \rightarrow
+		\frac{\mu}{2 A^2q^2}  \exp \left(-(\alpha/2+1)\mu e^{-x}/2\right)
+		\quad (x \rightarrow -\infty)\\
+	\end{aligned}
+	\label{AS_DE1}
+\end{equation}
+
+Let $\frac{\mu}{2}\exp \left(  -\alpha \mu e^x /4\right) \leq \epsilon  (q+{A}^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\geq \ln\left(-\frac{2\ln(2\epsilon  (q+{A}^{\alpha})^{-1}/\mu)}{\mu \alpha/2}\right)
+\end{equation}
+
+Let $\frac{\mu}{2 A^2q^2}  \exp \left(-(\alpha/2+1)\mu e^{-x}/2\right) \leq \epsilon  (q+{A}^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\leq -\ln\left(-\frac{2\ln(2\epsilon A^2 q^2  (q+{A}^{\alpha})^{-1}/\mu)}{\mu(1+\alpha/2)}\right)
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+	\begin{aligned}
+		&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu \alpha/2}\right)\\
+		&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon A^2_{\min} q^2  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu(1+\alpha/2)}\right)
+	\end{aligned}
+	\label{findminmax_DE1_q}
+\end{equation}
+
+We take $A$ in the range 1-1000, $q=100$, $\epsilon=10^{-16}$ and test the relative error $\eqref{error_q}$. For different $\alpha $, the results are shown in  Figure $\ref{E_JG_DE_q}$. It can be seen that the error is within our ideal range.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{qError_DE1_1}}
+	~~
+	\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{qError_DE1_2}}
+	~~
+	\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{qError_DE1_3}}\\
+	\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{qError_DE1_4}}
+	~~
+	\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{qError_DE1_5}}
+	~~
+	\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{qError_DE1_6}}
+	\caption{The error of DE1}
+	\label{E_JG_DE_q}
+\end{figure}
+
+Now, we summarize the algorithm that computes $(q+A^{\alpha})^{-1}$ when $\alpha \rightarrow 1$ in algorithm $\ref{alg:SEDE1_q}$
+\begin{breakablealgorithm}
+	\caption{Approximation of $(q+A^{\alpha})^{-1}$ when $\alpha \rightarrow 1$}
+	\label{alg:SEDE1_q}
+	\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+	\renewcommand{\algorithmicensure}{\textbf{Output:}}
+	\begin{algorithmic}[1]
+		\REQUIRE $A$, $\alpha$, $\epsilon$, $Q$,
+		$\mu$, $q$ , Method %%input
+		\ENSURE $\sum_{j=0}^{Q}\frac{w_j}{2\sqrt{\lambda_j}}\left[\left(\sqrt{\lambda_j}+iA\right)^{-1}+\left(\sqrt{\lambda_j}-iA\right)^{-1}\right]$    %%output
+		\IF{Method == SE}		
+		\STATE  Find endpoints $x_{min}$ and $x_{max}$ according to $\eqref{findminmax_SE1_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&x_{\min}= \frac{\ln(\epsilon q^2 A^2_{\min} (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{(1+\alpha/2)\mu}\\
+				&x_{\max}=-\frac{\ln(\epsilon (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\alpha \mu/2}
+			\end{aligned}
+		\end{equation*}
+		\STATE  Calculate $\lambda$ and $w$ according to the instructions below $\eqref{lw_SE1_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&w_j=h\frac{\sin(\pi \alpha/2)}{\pi}\frac{\mu e^{(1+\alpha/2)\mu x_j}}{q^2+2qe^{\alpha/2 \mu x_j}\cos(\pi\alpha/2)+e^{\alpha \mu x_j}}\\
+				&\lambda_j=e^{\mu x_j}
+			\end{aligned}
+		\end{equation*}
+		\ELSE[Method==DE]
+		\STATE  Find endpoints $x_{min}$ and $x_{max}$ according to $\eqref{findminmax_DE1_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu \alpha/2}\right)\\
+				&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon A^2_{\min} q^2  (q+{A_{\max}}^{\alpha})^{-1}/\mu)}{\mu(1+\alpha/2)}\right)
+			\end{aligned}
+		\end{equation*}
+		\STATE  Calculate $\lambda$ and $w$ according to the instructions below $\eqref{lw_DE1_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&w_j=h\frac{\sin(\pi \alpha/2)}{\pi}\mu\cosh x_j\frac{e^{(1+\alpha/2)\mu\sinh x_j }}{(q^2+2q e^{\mu \alpha/2 \sinh x_j}\cos(\pi\alpha/2)+e^{\mu\alpha\sinh x_j})}\\
+				&\lambda_j=\exp(\mu\sinh x_j)
+			\end{aligned}
+		\end{equation*}
+		\ENDIF
+		\STATE  Calculate $(q+A^{\alpha})^{-1}$ by 
+		\begin{equation}
+			(q+{A}^{\alpha})^{-1}=\sum_{j=0}^{Q}\frac{w_j}{2\sqrt{\lambda_j}}\left[\left(\sqrt{\lambda_j}+iA\right)^{-1}+\left(\sqrt{\lambda_j}-iA\right)^{-1}\right]
+		\end{equation}
+	\end{algorithmic}
+\end{breakablealgorithm}
+
+
+
+\section{$(q+A^{\alpha})^{-1}$ 的近似( $\alpha \rightarrow 0 $)}
+\esection{\textbf{The approximation of $(q+A^{\alpha})^{-1}$ when $\alpha \rightarrow 0$}}
+
+It can be found that when $\alpha \rightarrow 0$ and $x \rightarrow \infty $, $(q+A^{\alpha})^{-1}$is $0\times \infty$ type, which affects the accuracy of solution. So we want to propose a reasonable calculation method for this part. In order to improve the accuracy at $\alpha \rightarrow 0$, we divide the integral into two term:
+\begin{equation}
+	\begin{aligned}
+		(q+{A}^{\alpha})^{-1}&=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\infty}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\sigma}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&\quad +\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds
+	\end{aligned}
+	\label{jg_q}
+\end{equation}
+
+Let
+\begin{equation}
+	\begin{aligned}
+		&(q+A^{\alpha})^{-1}_1=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\sigma}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&(q+A^{\alpha})^{-1}_2=\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds
+	\end{aligned}
+\end{equation}
+
+\subsection{$(q+A^{\alpha})^{-1}_1$的近似}
+\esubsection{\textbf{The approximation of $(q+A^{\alpha})^{-1}_1$ }}
+
+First of all, we focus on the approximation of $(q+A^{\alpha})^{-1}_1$ in $\eqref{jg_q}$. 
+
+we use $s=\sigma(1+\hat{x})/2,\hat{x}\in (-1,1)$ to change the interval to $(-1, 1)$ and use the Jacobi-Gauss quadrature to approximate it.
+\begin{equation}
+	\begin{aligned}
+		(q+A^{\alpha})^{-1}_1&=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\sigma}\frac{s^{\alpha}(s{I}+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{-1}^{1}\frac{\left(\frac{\sigma(1+\hat{x})}{2}\right)^{\alpha}\left(\frac{\sigma(1+\hat{x})}{2}+{A}\right)^{-1}\frac{\sigma}{2}}{q^2+2q\left(\frac{\sigma(1+\hat{x})}{2}\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma(1+\hat{x})}{2}\right)^{2\alpha}}d\hat{x}\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{-1}^{1}\frac{\left(\frac{\sigma}{2}\right)^{\alpha+1}(1+\hat{x})^{\alpha}\left(\frac{\sigma}{2}(1+\hat{x})+{A}\right)^{-1}}{q^2+2q\left(\frac{\sigma}{2}(1+\hat{x})\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma}{2}(1+\hat{x})\right)^{2\alpha}}d\hat{x}\\
+		&=\sum_{j=1}^{N}w_j(\lambda_j+A)^{-1}
+	\end{aligned}
+\label{SE0_q1}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		& w_j=\frac{\sin(\pi\alpha)}{\pi}h(\frac{\sigma}{2})^{1+\alpha}\frac{\hat{w_j}}{q^2+2q\left(\frac{\sigma}{2}(1+\hat{x_j})\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma}{2}(1+\hat{x_j})\right)^{2\alpha}}\\
+		& \lambda_j=\frac{\sigma}{2}(1+\hat{x_j})
+	\end{aligned}
+\label{lw_SE0_q1}
+\end{equation}
+
+$\hat{x}_j$ and $\hat{w}_j$ are the standard Jacobi-Gauss quadrature points and weights with respect to the weight function $(1+\hat{x})^{\alpha}$.
+
+\subsection{$(q+A^{\alpha})^{-1}_2$ 的近似( $\alpha \rightarrow 0$)}
+\esubsection{\textbf{The approximation of $(q+A^{\alpha})^{-1}_2$ when $\alpha \rightarrow 0$}}
+
+Then, we focus on the approximation of $A_2^{-\alpha}$ when $\alpha \rightarrow 0 $. For $\alpha\rightarrow 0$, $(q+A^{\alpha})^{-1}_2$is also of type $0 \times \infty$, which requires further changes to the integral
+\begin{equation}
+	\begin{aligned}
+		(q+A^{\alpha})^{-1}_2&=\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha}(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+A-A)(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}\int_{\sigma}^{\infty}\frac{s^{\alpha-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&\quad -\frac{\sin(\pi \alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		&=\frac{\sin(\pi \alpha)}{\pi}
+		{{\ln \left(\frac{\sigma^{\alpha}+\sqrt{\cos \left(\pi\,\alpha \right)-1}\,\sqrt{\cos
+						\left(\pi\,a\right)+1}\,q+\cos \left(\pi\,a\right)\,q}{\sigma^{\alpha}-\sqrt{\cos \left(\pi\,\alpha\right)-1}\,\sqrt{\cos \left(\pi
+						\,\alpha\right)+1}\,q+\cos \left(\pi\,\alpha \right)\,q}\right)}\over{2\,\alpha\,
+				\sqrt{\cos \left(\pi\,\alpha\right)-1}\,\sqrt{\cos \left(\pi\,\alpha\right)+1}
+				\,q}}\\
+		&\quad -\frac{\sin(\pi \alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds
+	\end{aligned}
+\label{q2}
+\end{equation}
+
+Now we're going to talk about the integral
+\begin{equation}
+	\frac{\sin(\pi \alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds
+\end{equation}
+
+\textbf{1.SE formula }
+
+Let $s=e^{\mu x}+\sigma$, then $s'(x)=\mu e^{\mu x}$
+\begin{equation}
+	\begin{aligned}
+		&\frac{\sin(\pi\alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		=&\frac{\sin(\pi\alpha)}{\pi}A\int_{-\infty}^{\infty}\frac{(e^{\mu x}+\sigma)^{\alpha-1}((e^{\mu x}+\sigma)+{A})^{-1}\mu e^{\mu x}}{q^2+2q(e^{\mu x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\mu x}+\sigma)^{2\alpha}}ds\\
+		= & A\sum_{j=1}^{Q}w_j(\lambda_j+A)^{-1}
+	\end{aligned}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		& w_j=\frac{\sin(\pi\alpha)}{\pi}h\frac{(e^{\mu x_j}+\sigma)^{\alpha-1}\mu e^{\mu x_j}}{q^2+2q(e^{\mu x_j}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\mu x_j}+\sigma)^{2\alpha}}\\
+		& \lambda_j=e^{\mu x_j}+\sigma
+	\end{aligned}
+\label{lw_SE0_q}
+\end{equation}
+
+Now, let's focus on the integrand
+\begin{equation}
+	f(x)=\frac{(e^{\mu x}+\sigma)^{\alpha-1}\mu e^{\mu x}((e^{\mu x}+\sigma)+{A})^{-1}}{q^2+2q(e^{\mu x}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\mu x}+\sigma)^{2\alpha}}
+\end{equation}
+
+
+We plot it in Figure $\ref{function_SE_alpha0_q}$. We can see that the integrand decreases rapidly at $\alpha \rightarrow 0$.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE0_1}}
+	~~
+	\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE0_2}}
+	~~
+	\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE0_3}}\\
+	\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE0_4}}
+	~~
+	\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{qfunction_SE0_5}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{qfunction_SE0_6}}
+	\caption{The integrand f(x) in $\eqref{function_SE_alpha0_q}$ for $\sigma=1,\mu=1,A=50$}
+	\label{function_SE_alpha0_q}
+\end{figure}
+
+It's easy to find that
+\begin{equation}
+	\begin{aligned}
+		& f(x)\rightarrow \mu e^{-(\alpha+1) \mu x}\quad (x \rightarrow +\infty)\\
+		& f(x)\rightarrow \frac{\mu \sigma^{\alpha-1}e^{\mu x}(\sigma+A)^{-1}}{(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}\quad (x \rightarrow -\infty)
+	\end{aligned}
+\end{equation}
+
+when $x\rightarrow +\infty$, let $\mu e^{-(\alpha+1)\mu x}\leq \epsilon (q+A^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\geq -\frac{\ln(\epsilon (q+A^{\alpha})^{-1}/\mu)}{(\alpha+1)\mu}
+\end{equation}
+
+When $x\rightarrow -\infty$, let $\frac{\mu \sigma^{\alpha-1}e^{\mu x}(\sigma+A)^{-1}}{(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}\leq \epsilon (q+A^{\alpha})^{-1}$ and $e^{\mu x}\le \frac{\sigma}{10}$, we can get
+\begin{equation}
+	x\leq \min \left\{\frac{\ln\left(\frac{(\sigma+A)\epsilon(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(q+A^{\alpha})\mu}\right)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+	\begin{aligned}
+		&x_{\min}= \min \left\{\frac{\ln\left(\frac{(\sigma+A_{\min})\epsilon(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(q+A_{\min}^{\alpha})\mu}\right)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}\\
+		&x_{\max}=-\frac{\ln(\epsilon (q+A_{\max}^{\alpha})^{-1}/\mu)}{(\alpha+1)\mu}
+	\end{aligned}
+\label{findminmax_SE0_q}
+\end{equation}
+
+We take $A$ in the range 1-1000, $Q=256$,  $\epsilon=10^{-16}$ and test the relative error $\eqref{error_q}$. For different $\alpha $, the results are shown in Figure $\ref{E_JG_SE0_q}$. It can be seen that the error is within our ideal range.
+
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{qError_JG-SE0_1}}
+	~~
+	\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{qError_JG-SE0_2}}
+	~~
+	\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{qError_JG-SE0_3}}\\
+	\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{qError_JG-SE0_4}}
+	~~
+	\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{qError_JG-SE0_5}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{qError_JG-SE0_6}}
+	\caption{The error of JG-SE0}
+	\label{E_JG_SE0_q}
+\end{figure}
+
+\textbf{ 2.DE formula}
+
+Let $s=\exp(\mu\sinh x)+\sigma$, then
+\begin{equation}
+	\begin{aligned}
+		&\frac{\sin(\pi\alpha)}{\pi}A\int_{\sigma}^{\infty}\frac{s^{\alpha-1}(s+{A})^{-1}}{q^2+2qs^{\alpha}\cos(\pi\alpha)+s^{2\alpha}}ds\\
+		=&\frac{\sin(\pi\alpha)}{\pi}A\int_{-\infty}^{\infty}\frac{(\exp(\mu \sinh x)+\sigma)^{\alpha-1}}{\exp(\mu \sinh x)+\sigma)+{A}}\times\\
+		&	\frac{\mu \cosh x\exp(\mu \sinh x)}{q^2+2q(\exp(\mu \sinh x)+\sigma)^{\alpha}\cos(\pi\alpha)+(\exp(\mu \sinh x)+\sigma)^{2\alpha}} ds\\
+		= & A\sum_{j=1}^{Q}w_j(\lambda_j+A)^{-1}
+	\end{aligned}
+\end{equation}
+
+where
+\begin{equation}
+	\begin{aligned}
+		& w_j=h\frac{\sin(\alpha\pi)}{\pi}\\
+		&\quad \frac{(\exp(\mu \sinh x_j)+\sigma)^{\alpha-1}\mu \cosh x_j\exp(\mu \sinh x_j)}{q^2+2q(\exp(\mu \sinh x_j)+\sigma)^{\alpha}\cos(\pi\alpha)+(\exp(\mu \sinh x_j)+\sigma)^{2\alpha}}\\
+		& \lambda_j=\exp(\mu\sinh x_j)+\sigma
+	\end{aligned}
+\label{lw_DE0_q}
+\end{equation}
+
+Now, let's focus on the integrand
+\begin{equation}
+	\begin{aligned}
+		f(x)&=\frac{\mu \cosh x\exp(\mu \sinh x)}{q^2+2q(\exp(\mu \sinh x)+\sigma)^{\alpha}\cos(\pi\alpha)+(\exp(\mu \sinh x)+\sigma)^{2\alpha}} \times\\
+		&\qquad \frac{(\exp(\mu \sinh x)+\sigma)^{\alpha-1}}{\exp(\mu \sinh x)+\sigma)+{A}}
+	\end{aligned}
+	\label{function_DE_alpha0_q}
+\end{equation}
+
+
+
+We plot it in Figure $\ref{function_DE_alpha0_q}$.  We can see that the integrand decreases rapidly at $\alpha \rightarrow 0$.
+\begin{figure}[htbp]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE0_1}}
+	~~
+	\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE0_2}}
+	~~
+	\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE0_3}}\\
+	\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE0_4}}
+	~~
+	\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{qfunction_DE0_5}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{qfunction_DE0_6}}
+	\caption{The integrand f(x) in $\eqref{function_DE_alpha0_q}$, $\sigma=1,\mu=\pi/2,A=50$}
+	\label{function_DE_alpha0_q}
+\end{figure}
+
+It's easy to find that
+\begin{equation}
+	\begin{aligned}
+		& f(x) \rightarrow \frac{\mu}{2}e^x \exp(-(\alpha+1)\frac{\mu}{2}e^x)\rightarrow  \frac{\mu}{2} \exp(-(\alpha+1)\frac{\mu}{2}e^x) \quad(x\rightarrow +\infty)\\
+		& f(x) \rightarrow \frac{\mu}{2} \frac{\sigma^{\alpha-1}\exp(-\mu e^{-x}/2)}{(\sigma+A)(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})} \quad(x\rightarrow -\infty)
+	\end{aligned}
+\end{equation}
+
+when $x\rightarrow +\infty$, let $\frac{\mu}{2} \exp(-(\alpha+1)\frac{\mu}{2}e^x)\leq \epsilon (q+A^{\alpha})^{-1}$, we can get
+\begin{equation}
+	x\geq \ln\left(-\frac{2\ln(2\epsilon(q+A^{\alpha})^{-1}/\mu)}{\mu(\alpha+1)}\right)
+\end{equation}
+
+When $x\rightarrow -\infty$, let $\frac{\mu}{2} \frac{\sigma^{\alpha-1}\exp(-\mu e^{-x}/2)}{(\sigma+A)(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}\leq \epsilon (q+A^{\alpha})^{-1}$ and $\exp(-\frac{\mu}{2}e^{-x})\le \frac{\sigma}{10}$, we can get
+\begin{equation}
+	x\leq \min \left\{-\ln\left(-\frac{2\ln\left(\frac{2(\sigma+A)\epsilon(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(q+A^{\alpha})\mu} \right)}{\mu}\right),-\ln \left(-\frac{2\ln(\sigma/10)}{\mu}\right)\right\}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+	\begin{aligned}
+		&x_{\min}\\
+		=&\min \left\{-\ln\left(-\frac{2\ln\left(\frac{2(\sigma+A_{\min})\epsilon(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(q+A_{\min}^{\alpha})\mu} \right)}{\mu}\right),-\ln \left(-\frac{2\ln(\sigma/10)}{\mu}\right)\right\}
+		\\&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon(q+A_{\max}^{\alpha})^{-1}/\mu)}{\mu(\alpha+1)}\right)
+\end{aligned}
+\label{findminmax_DE0_q}
+\end{equation}
+
+We take $A$ in the range 1-1000, $Q=256$, $\mu=\pi/2$, $\epsilon=10^{-16}$ and test the relative error $\eqref{error_q}$. For different $\alpha $, the results are shown in Figure $\ref{E_JG_DE0_q}$.It can be seen that the error is within our ideal range.
+
+\begin{figure}[h!]
+	\centering
+	\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{qError_JG-DE0_1}}
+	~~
+	\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{qError_JG-DE0_2}}
+	~~
+	\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{qError_JG-DE0_3}}\\
+	\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{qError_JG-DE0_4}}
+	~~
+	\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{qError_JG-DE0_5}}
+	~~
+	\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{qError_JG-DE0_6}}
+	\caption{The error of JG-DE0}
+	\label{E_JG_DE0_q}
+\end{figure}
+
+Now, we summarize the algorithm that computes $(q+A^{\alpha})^{-1}$ when $\alpha \rightarrow 0$ in algorithm $\ref{alg:SEDE0_q}$
+\begin{breakablealgorithm}
+	\caption{Approximation of $(q+A^{\alpha})^{-1}$ when $\alpha \rightarrow 0$}
+	\label{alg:SEDE0_q}
+	\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+	\renewcommand{\algorithmicensure}{\textbf{Output:}}
+	\begin{algorithmic}[1]
+		\REQUIRE $A$, $\alpha$, $\epsilon$, $Q$, $q$, $\mu$, $\sigma$, Method %%input
+		\ENSURE $\sum_{j=1}^{N}{w_j}(\lambda_j+A)^{-1}+B-A\sum_{i=1}^{Q} w_i(\lambda_i I+ A)^{-1}$    %%output
+		\STATE  \text{\bf{Divide $(q+A^{\alpha})^{-1}$ into two parts as $\eqref{jg_q}$}}
+		\begin{equation}
+		(q+A^{\alpha})^{-1}=(q+A^{\alpha})^{-1}_1+(q+A^{\alpha})^{-1}_2
+		\end{equation} 
+		\STATE Calculate ${w_j}$ and $\lambda_j$ according to the instructions below $\eqref{lw_SE0_q1}$
+		\begin{equation*}
+			\begin{aligned}
+				& w_j=\frac{\sin(\pi\alpha)}{\pi}h(\frac{\sigma}{2})^{1+\alpha}\frac{\hat{w_j}}{q^2+2q\left(\frac{\sigma}{2}(1+\hat{x_j})\right)^{\alpha}\cos(\pi\alpha)+\left(\frac{\sigma}{2}(1+\hat{x_j})\right)^{2\alpha}}\\
+				& \lambda_j=\frac{\sigma}{2}(1+\hat{x_j})
+			\end{aligned}
+		\end{equation*}		
+		\STATE \text{\bf{Calculate $(q+A^{\alpha})^{-1}_1$ by $\eqref{SE0_q1}$}}
+		\begin{equation}
+			(q+A^{\alpha})^{-1}_1=\sum_{j=1}^{N}{w_j}(\lambda_j+A)^{-1}
+		\end{equation}
+		\IF{Method == SE}		
+		\STATE  Find endpoints $x_{min}$ and $x_{max}$ according to $\eqref{findminmax_SE0_q}$
+		\begin{equation*}
+			\begin{aligned}
+				&x_{\min}= \min \left\{\frac{\ln\left(\frac{(\sigma+A_{\min})\epsilon(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(q+A_{\min}^{\alpha})\mu}\right)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}\\
+				&x_{\max}=-\frac{\ln(\epsilon (q+A_{\max}^{\alpha})^{-1}/\mu)}{(\alpha+1)\mu}
+			\end{aligned}
+		\end{equation*}
+		\STATE  Calculate $\lambda$ and $w$ according to the instructions below $\eqref{lw_SE0_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				& w_j=\frac{\sin(\pi\alpha)}{\pi}h\frac{(e^{\mu x_j}+\sigma)^{\alpha-1}\mu e^{\mu x_j}}{q^2+2q(e^{\mu x_j}+\sigma)^{\alpha}\cos(\pi\alpha)+(e^{\mu x_j}+\sigma)^{2\alpha}}\\
+				& \lambda_j=e^{\mu x_j}+\sigma
+			\end{aligned}
+		\end{equation*}
+		\ELSE[Method==DE]
+		\STATE  Find endpoints $x_{min}$ and $x_{max}$ according to $\eqref{findminmax_DE0_q}$\\
+		\begin{equation*}
+			\begin{aligned}
+				&x_{\min}\\
+				=&\min \left\{-\ln\left(-\frac{2\ln\left(\frac{2(\sigma+A_{\min})\epsilon(q^2+2q\sigma^{\alpha}\cos(\pi\alpha)+\sigma^{2\alpha})}{\sigma^{\alpha-1}(q+A_{\min}^{\alpha})\mu} \right)}{\mu}\right),-\ln \left(-\frac{2\ln(\sigma/10)}{\mu}\right)\right\}
+				\\&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon(q+A_{\max}^{\alpha})^{-1}/\mu)}{\mu(\alpha+1)}\right)
+			\end{aligned}
+		\end{equation*}
+		\STATE  Calculate $\lambda$ and $w$ according to the instructions below $\eqref{lw_DE0_q}$
+		\begin{equation*}
+			\begin{aligned}
+				& w_j=h\frac{\sin(\alpha\pi)}{\pi}\\
+				&\quad \frac{(\exp(\mu \sinh x_j)+\sigma)^{\alpha-1}\mu \cosh x_j\exp(\mu \sinh x_j)}{q^2+2q(\exp(\mu \sinh x_j)+\sigma)^{\alpha}\cos(\pi\alpha)+(\exp(\mu \sinh x_j)+\sigma)^{2\alpha}}\\
+				& \lambda_j=\exp(\mu\sinh x_j)+\sigma
+			\end{aligned}
+		\end{equation*}
+		\ENDIF
+		\STATE  \text{\bf{Calculate $(q+A^{\alpha})^{-1}_2$ by $\eqref{q2}$}} 
+		\begin{equation}
+			\begin{aligned}
+				&(q+A^{\alpha})^{-1}_2=B-A\sum_{i=1}^{Q} w_i(\lambda_i I+ A)^{-1}\\
+				& \quad B=\frac{\sin(\pi \alpha)}{\pi}
+				{{\ln \left(\frac{\sigma^{\alpha}+\sqrt{\cos \left(\pi\,\alpha \right)-1}\,\sqrt{\cos
+								\left(\pi\,a\right)+1}\,q+\cos \left(\pi\,a\right)\,q}{\sigma^{\alpha}-\sqrt{\cos \left(\pi\,\alpha\right)-1}\,\sqrt{\cos \left(\pi
+								\,\alpha\right)+1}\,q+\cos \left(\pi\,\alpha \right)\,q}\right)}\over{2\,\alpha\,
+						\sqrt{\cos \left(\pi\,\alpha\right)-1}\,\sqrt{\cos \left(\pi\,\alpha\right)+1}
+						\,q}}
+			\end{aligned}
+		\end{equation}
+		\STATE  Calculate $(q+A^{\alpha})^{-1}$ by 
+		\begin{equation}
+			(q+{A}^{\alpha})^{-1}=\sum_{j=1}^{N}{w_j}(\lambda_j+A)^{-1}+B-A\sum_{i=1}^{Q} w_i(\lambda_i I+ A)^{-1}
+		\end{equation}
+	\end{algorithmic}
+\end{breakablealgorithm}
+
+\section{本章小结}
+\esection{Chapter summary}
+
+This chapter encompasses the numerical approximation of $(q+A^{\alpha})^{-1}$. Initially, we express $(q+A^{\alpha})^{-1}$ in integral form using the Cauchy integral formula. Subsequently, we transform it into a summation form, $\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}$. For cases where $\alpha$ doesn't tend towards 0 or 1, we employ approximation methods(Algorithm $\ref{alg:SEDE_q}$) based on Single-Exponential and Double-Exponential approaches for $(q+A^{\alpha})^{-1}$. Nevertheless, when $\alpha \rightarrow 0$ and $x \rightarrow \infty$, the integral becomes of the $0 \times \infty$ type.  In the case of $\alpha \rightarrow 1$, the integrand exhibits an asymptotic singularity. To address these issues, we propose Algorithm $\ref{alg:SEDE0_q}$ and $\ref{alg:SEDE1_q}$ for efficiently computing the situations when $\alpha \rightarrow 0$ and $\alpha \rightarrow 1$, respectively.

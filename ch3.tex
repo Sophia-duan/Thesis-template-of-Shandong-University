@@ -1,0 +1,941 @@
+% !Mode:: "TeX:UTF-8"
+\chapter{${A}^{-\alpha}$的近似}
+\echapter{Approximation of ${A}^{-\alpha}$}
+
+To begin, let's focus on the numerical solution of the following equation:
+\begin{equation}
+	(-\Delta)^\alpha u = f 
+\end{equation}
+
+We can get
+\begin{equation}
+	u = (-\Delta)^{-\alpha} f
+\end{equation}
+
+The primary challenge lies in approximating the operator $A^{-\alpha}$, where $A$ denotes the discretized matrix representation of the Laplace operator.
+
+Using the Cauchy integral formula:
+\begin{equation}
+	f(A)=\frac{1}{2 \pi i} \int_T f(s)(s-A)^{-1} d s
+\end{equation}
+
+Letting $f(A) = A^{-\alpha}$, we have:
+\begin{equation}
+	A^{-\alpha}=\frac{1}{2 \pi i} \int_T s^{-\alpha}(s-A)^{-1} d s
+\end{equation}
+
+Since there are no singularities on the negative real axis, We can split the contour along the negative real axis：
+\begin{equation}
+	\begin{aligned}
+	A^{-\alpha}&=\frac{1}{2 \pi i} \int_{-\infty}^0(s+i 0)^{-\alpha}(s-A)^{-1} d s+\frac{1}{2 \pi i} \int_0^{-\infty}(s-i 0)^{-\alpha}(s-A)^{-1} d s \\
+	&=\frac{1}{2 \pi i} \int_{-\infty}^0[(s+i 0)^{-\alpha}-(s-i 0)^{-\alpha}](s-A)^{-1} d s\\
+	&=-\frac{1}{2 \pi i} \int_{0}^{+\infty}[(-s+i 0)^{-\alpha}-(-s-i 0)^{-\alpha}](s+A)^{-1} d s\\
+	&=-\frac{1}{2 \pi i} \int_{0}^{+\infty}[(se^{i \pi})^{-\alpha}-(se^{-i \pi})^{-\alpha}](s+A)^{-1} d s\\
+	&=-\frac{1}{2 \pi i} \int_{0}^{+\infty}[s^{-\alpha}(e^{-i \pi\alpha}-e^{i \pi \alpha})](s+A)^{-1} d s\\
+\end{aligned}
+\end{equation}
+
+We can simplify the term $e^{-i\pi\alpha}-e^{i\pi\alpha}$ as follows:
+\begin{equation}
+	\begin{aligned}
+	&e^{-i \pi\alpha}-e^{i \pi \alpha}\\
+	=&[\cos(\pi \alpha)-i \sin(\pi \alpha)]-[\cos(\pi \alpha)+i \sin(\pi \alpha)]\\
+	=&-2 i \sin(\pi \alpha)
+\end{aligned}
+\end{equation}
+
+Hence, $A^{-\alpha}$ can be transformed to the $Balakrishnan$  integral \cite{Balakrishnan1960FractionalPO} when $\alpha \in(0,1)$:
+\begin{equation}
+	\begin{aligned}
+	A^{-\alpha}& =-\frac{1}{2 \pi i} \int_{0}^{+\infty}[s^{-\alpha}(2 i \sin(\pi\alpha))](s+A)^{-1} d s\\
+	& =\frac{\sin(\pi \alpha)}{\pi} \int_{0}^{+\infty} s^{-\alpha}(s+A)^{-1} d s
+\label{original}
+\end{aligned}
+\end{equation}
+
+We want to seek a suitable summation formula to approximate the  $Balakrishnan$  integral for constant fractional order $\alpha$ ,i.e.,
+\begin{equation}
+{A}^{-\alpha}=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}
+\end{equation}
+
+
+\section{基于Single-Exponential (SE)的$A^{-\alpha}$近似}
+\esection{Single-Exponential (SE) formulas }
+
+
+By using  $s=e^{\mu x}$ in $\eqref{original}$\cite{Harizanov2020ASO} , we can get $s'(x)=\mu e^{\mu x}$ and
+\begin{equation}
+{A}^{-\alpha}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}e^{-\alpha\mu x}(e^{\mu x} I+A)^{-1}\mu e^{\mu x} dx
+\label{expu}
+\end{equation}
+
+Define the integrand
+\begin{equation}
+f(x)=\frac{\mu e^{(1-\alpha)\mu x}}{e^{\mu x}+A}
+\label{function_SE}
+\end{equation}
+
+For different $\alpha$ and $A$, $\mu=1$, we plot the integrand f(x) in Figure $\ref{pfunction_SE}$.
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.3\textwidth]{function_SE_1}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{function_SE_2}}
+~~
+\subfloat[$\alpha=0.4$]{\includegraphics[width=0.3\textwidth]{function_SE_3}}\\
+\subfloat[$\alpha=0.7$]{\includegraphics[width=0.3\textwidth]{function_SE_4}}
+~~
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{function_SE_5}}
+~~
+\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.3\textwidth]{function_SE_6}}
+\caption{The integrand f(x)in $\eqref{function_SE}$ for $\mu=1$}
+\label{pfunction_SE}
+\end{figure}
+
+
+
+
+The trapezoidal rule for approximating $\eqref{expu}$ is
+\begin{equation}
+{A}^{-\alpha}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}f(x)dx\approx \frac{\sin(\pi \alpha)}{\pi} h \sum_{j=-\infty}^{+\infty} f(jh)
+\label{tr}
+\end{equation}
+
+where $h>0$ is a step size. In practice, we need to truncate $\eqref{tr}$ to obtain
+\begin{equation}
+{A}^{-\alpha}\approx \frac{\sin(\pi \alpha)}{\pi} h\sum_{j=-\infty}^{+\infty} f(jh)
+=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}
+\label{SE}
+\end{equation}
+
+where
+\begin{equation}
+     \begin{aligned}
+&w_j=h\frac{\sin(\pi \alpha)}{\pi}\mu e^{(1-\alpha)\mu x_j}\\
+&\lambda_j=e^{\mu x_j}
+    \end{aligned}
+\end{equation}
+
+$x_j=x_{\min}+jh$,$h=(x_{\max}-x_{\min})/Q$, $Q>1$ is a positive integer, and $x_{\min}$ and $x_{\max}$ are chosen such that
+\begin{equation}
+|f(x)|/\|f(x)\|_{\infty}\ge \epsilon ,\quad \forall x\in[x_{\min},x_{\max}]
+\label{findMN}
+\end{equation}
+
+We can also give approximate estimates of $x_{\min}$ and $x_{\max}$ in advance.
+
+It's easy to find
+\begin{equation}
+\begin{aligned}
+& f(x)\rightarrow \frac{\mu e^{(1-\alpha)\mu x}}{e^{\mu x}}=\mu e^{-\alpha \mu x} \quad (x \rightarrow +\infty)\\
+& f(x)\rightarrow \frac{\mu e^{(1-\alpha)\mu x}}{A} \quad (x \rightarrow -\infty)
+\end{aligned}
+\label{AS_SE}
+\end{equation}
+
+Let $\mu e^{-\alpha \mu x}\leq \epsilon A^{-\alpha}$, the tolerance $\epsilon$ is small enough. We can get
+\begin{equation}
+x\geq -\frac{\ln(\epsilon A^{-\alpha}/\mu)}{\alpha \mu}
+\end{equation}
+
+Let $\frac{\mu e^{(1-\alpha)\mu x}}{A} \leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\leq \frac{\ln(\epsilon A^{1-\alpha}/\mu)}{(1-\alpha)\mu}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+\begin{aligned}
+&x_{\min}=\frac{\ln(\epsilon A_{\min}^{1-\alpha}/\mu)}{(1-\alpha)\mu}\\
+&x_{\max}=-\frac{\ln(\epsilon A_{\max}^{-\alpha}/\mu)}{\alpha \mu}
+\end{aligned}
+\end{equation}
+
+Here and in the following, we always take $\epsilon=10^{-16}$ in numerical simulations and test the relative error $e(t)$ by
+\begin{equation}
+e(t)=\left|\frac{{A}^{-\alpha}-\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}}{{A}^{-\alpha}}\right|
+\label{error}
+\end{equation}
+
+We select 100 points from 1 to 1000 at equal intervals of $A$,  $\epsilon=10^{-16}$ For different $\alpha$ and $Q$, the results are shown in Figure $\ref{E_SE}$
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.3\textwidth]{Error_SE_1}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{Error_SE_2}}
+~~
+\subfloat[$\alpha=0.4$]{\includegraphics[width=0.3\textwidth]{Error_SE_3}}\\
+\subfloat[$\alpha=0.7$]{\includegraphics[width=0.3\textwidth]{Error_SE_4}}
+~~
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{Error_SE_5}}
+~~
+\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.3\textwidth]{Error_SE_6}}
+  \caption{The Relative errors with different $\alpha$ and $Q$}
+  \label{E_SE}
+\end{figure}
+
+
+\section{基于 Double-Exponential (DE)的$A^{-\alpha}$近似}
+\esection{ Double-Exponential (DE) formulas}
+
+By using $s=\exp(\mu\sinh x)$ in $\eqref{original}$,  we can get $s'(x)=\mu \cosh x \exp(\mu \sinh x)$ and
+\begin{equation}
+{A}^{-\alpha}=\frac{\sin(\pi \alpha)}{\pi}\int_{-\infty}^{+\infty}
+\frac{\mu\cosh(x)\exp((1-\alpha)\mu\sinh x)}{\exp(\mu\sinh x){I}+A}dx
+\label{de}
+\end{equation}
+
+Define the integrand
+\begin{equation}
+f(x)=\mu\cosh(x)\frac{\exp((1-\alpha)\mu\sinh x)}{\exp(\mu\sinh x)+A}
+\label{function_DE}
+\end{equation}
+
+ For different $\alpha$ and $A$,$\mu=\pi/2$ we plot the integrand f(x) in Figure $\ref{pfunction_DE}$.
+ \begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.3\textwidth]{function_DE_1}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{function_DE_2}}
+~~
+\subfloat[$\alpha=0.4$]{\includegraphics[width=0.3\textwidth]{function_DE_3}}\\
+\subfloat[$\alpha=0.7$]{\includegraphics[width=0.3\textwidth]{function_DE_4}}
+~~
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{function_DE_5}}
+~~
+\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.3\textwidth]{function_DE_6}}
+  \caption{The integrand f(x) in $\eqref{function_DE}$ for $\mu=\pi/2$}
+  \label{pfunction_DE}
+\end{figure}
+
+
+The trapezoidal rule for approximating $\eqref{de} $ is
+\begin{equation}
+{A}^{-\alpha}\approx \frac{\sin(\pi \alpha)}{\pi} h\sum_{j=-\infty}^{+\infty} f(jh)=\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}\label{DE}
+\end{equation}
+
+where
+\begin{equation}
+\begin{aligned}
+&w_j=h\frac{\sin(\pi \alpha)}{\pi}\mu\cosh x_j\exp((1-\alpha)\mu\sinh x_j )\\
+&\lambda_j=\exp(\mu\sinh x_j)
+\end{aligned}
+\end{equation}
+
+$x_j=x_{\min}+jh$,$h=(x_{\max}-x_{\min})/Q$, $Q>1$ is a positive integer, and $x_{\min}$ and $x_{\max}$ are chosen such that $\eqref{findMN}$ holds. We can also give approximate estimates of $x_{\min}$ and $x_{\max}$ in advance.
+
+It's easy to find
+\begin{equation}
+\begin{aligned}
+&\cosh x\rightarrow \frac{e^x}{2},\quad \sinh x \rightarrow \frac{e^x}{2} \quad(x\rightarrow +\infty)\\
+&\cosh x\rightarrow \frac{e^{-x}}{2},\quad \sinh x \rightarrow \frac{-e^{-x}}{2} \quad (x \rightarrow -\infty)
+\end{aligned}
+\end{equation}
+
+So,
+\begin{equation}
+\begin{aligned}
+& f\left( x \right) \rightarrow
+	\frac{\mu}{2}e^x\frac{\exp \left( \left( 1-\alpha \right) \mu e^x/2 \right)}{\exp \left( \mu \text{e}^x/2 \right)}
+	\rightarrow \frac{\mu}{2}\exp \left(  -\alpha \mu e^x /2\right)
+	\quad (x \rightarrow +\infty)\\
+& f\left( x \right) \rightarrow 	 \frac{\mu}{2} e^{-x} \frac{\exp \left((\alpha-1)\mu e^{-x}/2\right)}{A} \rightarrow
+	 \frac{\mu}{2 A}  \exp \left((\alpha-1)\mu e^{-x}/2\right)
+	 \quad (x \rightarrow -\infty)\\
+\end{aligned}
+\label{AS_DE}
+\end{equation}
+
+Let $\frac{\mu}{2}\exp \left(  -\alpha \mu e^x /2\right) \leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\geq \ln\left(-\frac{2\ln(2\epsilon A^{-\alpha}/\mu)}{\mu \alpha}\right)
+\end{equation}
+
+Let $\frac{\mu}{2 A}  \exp \left((\alpha-1)\mu e^{-x}/2\right) \leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\leq -\ln\left(-\frac{2\ln(2\epsilon A^{1-\alpha}/\mu)}{\mu(1-\alpha)}\right)
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+\begin{aligned}
+&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon A_{\max}^{-\alpha}/\mu)}{\mu \alpha}\right)\\
+&x_{\min}=-\ln\left(-\frac{2\ln(2\epsilon A_{\min}^{1-\alpha}/\mu)}{\mu(1-\alpha)}\right)
+\end{aligned}
+\end{equation}
+
+We take $A$ in the range 1-1000,  $\epsilon=10^{-16}$ and test the relative error $\eqref{error}$. For different $\alpha $, the results are shown in Figure $\ref{E_DE}$
+
+ \begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.3\textwidth]{Error_DE_1}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{Error_DE_2}}
+~~
+\subfloat[$\alpha=0.4$]{\includegraphics[width=0.3\textwidth]{Error_DE_3}}\\
+\subfloat[$\alpha=0.7$]{\includegraphics[width=0.3\textwidth]{Error_DE_4}}
+~~
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{Error_DE_5}}
+~~
+\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.3\textwidth]{Error_DE_6}}
+  \caption{The Relative errors with different $\alpha$ and $Q$}
+  \label{E_DE}
+\end{figure}
+
+\begin{table}[htbp]
+	\centering
+	\caption{Summary of SE and DE methods}\label{TAB_SEDE}
+	\begin{tabular}
+		{c|c|c}
+		\toprule
+		\textbf{Method}   &  \textbf{Formula}  & \textbf{Parameter}\\
+		\hline
+		Single-Exponential &${A}^{-\alpha}\approx \sum_{j=0}^{Q}w_j(\lambda_j I+A)^{-1}\label{SE_summary}$   &  $\begin{aligned}&w_j=h\frac{\sin(\pi \alpha)}{\pi}\mu e^{(1-\alpha)\mu x_j}\\&\lambda_j=e^{\mu x_j}\end{aligned}$ \\
+		\hline
+		Double-Exponential&${A}^{-\alpha}\approx \sum_{j=0}^{Q}w_j(\lambda_j I+A)^{-1}\label{DE_summary}$ & $\begin{aligned}&w_j=h\frac{\sin(\pi \alpha)}{\pi}\mu\cosh x_j\\&\qquad \exp((1-\alpha)\mu\sinh x_j )\\&\lambda_j=\exp(\mu\sinh x_j)\end{aligned}$\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\section{分区间积分}
+\esection{Integrate over two intervals}
+
+It can be seen from  Figure $\ref{E_SE}$ and $\ref{E_DE}$ , the accuracy of using the trapezoid formula is undesirable in the case of $\alpha\rightarrow 1,\alpha\rightarrow 0 $. In order to improve the accuracy at $\alpha \rightarrow 1$ and $\alpha \rightarrow 0$, we divide the integral into two term:
+\begin{equation}  \begin{aligned}   {A}^{-\alpha}&=\frac{\sin(\pi \alpha)}{\pi}\int_0^{\infty}s^{-\alpha}(s{I}+{A})^{-1}ds\\   &=\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}(s{I}+{A})^{-1}ds+   \frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{\infty}s^{-\alpha}(s{I}+{A})^{-1}ds
+\end{aligned}
+\label{jg}
+\end{equation}
+
+Let
+\begin{equation}
+\begin{aligned}
+&A^{-\alpha}_1=\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}(s{I}+{A})^{-1}ds\\
+&A^{-\alpha}_2=\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{\infty}s^{-\alpha}(s{I}+{A})^{-1}ds
+\end{aligned}
+\end{equation}
+
+\subsection{$A_1^{-\alpha}$的近似}
+\esubsection{\textbf{The approximation of $A_1^{-\alpha}$ }}
+
+
+First of all, we focus on the approximation of $A_1^{-\alpha}$ in $\eqref{jg}$. Here we propose two ways to do this.
+
+\textbf{1.Ignore small terms(IS)}
+
+From integration by parts, we can get
+\begin{equation}  \begin{aligned} &\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}(s{I}+{A})^{-1}ds\\ =&\frac{\sin(\alpha \pi)}{\pi}\int_{0}^{\sigma}(s{I}+{A})^{-1}d\left(\frac{s^{1-\alpha}}{1-\alpha}\right)\\ =&\frac{\sin(\alpha \pi) \sigma^{1-\alpha}}{\pi(1-\alpha)}(\sigma{I}+{A})^{-1}+\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\int_0^{\sigma}(s{I}+{A})^{-2}s^{1-\alpha}ds  \end{aligned}\end{equation}
+
+ If $\sigma$ is small enough,  we can ignore the integral $\sin(\alpha \pi)/(\pi(1-\alpha))\int_0^{\sigma}(s{I}+{A})^{-2}s^{1-\alpha}ds$
+\begin{equation}
+\begin{aligned}
+\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}(s{I}+{A})^{-1}ds & \approx \frac{\sin(\alpha \pi) \sigma^{1-\alpha}}{\pi(1-\alpha)}(\sigma{I}+{A})^{-1} \\
+&=w(\lambda I+A)^{-1}
+\end{aligned}
+\label{delete}\end{equation}
+
+where
+\begin{equation}
+w=\frac{\sin(\alpha \pi)\sigma^{1-\alpha}}{\pi (1-\alpha)},\quad \lambda=\sigma
+\end{equation}
+
+Next, we give the range of $\sigma$ that makes $\eqref{delete}$ hold, and notice that $A \ge 1 $
+\begin{equation}
+\int_0^{\sigma}(s{I}+{A})^{-2}s^{1-\alpha}ds\le \int_0^{\sigma}s^{1-\alpha}ds=\frac{\sigma^{2-\alpha}}{2-\alpha}
+\end{equation}
+
+
+Let $\sigma^{2-\alpha}/(2-\alpha)\le \epsilon A^{-\alpha}$, so
+\begin{equation}
+\sigma \le \left((2-\alpha)\epsilon A^{-\alpha}_{\max}\right)^{\frac{1}{2-\alpha}}
+\end{equation}
+
+\textbf{2.Jacobi-Gauss quadrature }
+
+We can transform the integral as follows:
+\begin{equation}
+  \begin{aligned}
+ &\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}(s{I}+{A})^{-1}ds\\
+ =&\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}\left[(s{I}+{A})^{-1}-A^{-1}+A^{-1}\right]ds\\
+ =&\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}\left[(s{I}+{A})^{-1}-A^{-1}\right]ds+\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{-\alpha}A^{-1}ds\\
+= & -\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{1-\alpha}(s{I}+{A})^{-1}A^{-1}ds+\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}A^{-1}\\
+  \end{aligned}
+\end{equation}
+
+we use $s=\sigma(1+\hat{x})/2,\hat{x}\in (-1,1)$ to change the interval to $(-1, 1)$ and use the Jacobi-Gauss quadrature to approximate it.
+\begin{equation}
+  \begin{aligned}
+& -\frac{\sin(\alpha \pi)}{\pi}\int_0^{\sigma}s^{1-\alpha}(s{I}+{A})^{-1}A^{-1}ds+\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}A^{-1}\\
+=&-\frac{\sin(\alpha \pi)}{\pi}\int_{-1}^{1}\left(\frac{\sigma}{2}\right)^{2-\alpha}(1+\hat{x})^{1-\alpha}\left(\frac{\sigma(1+\hat{x})}{2}{I}+{A}\right)^{-1}A^{-1}d\hat{x}\\
+& +\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}A^{-1}\\
+=& -\sum_{j=1}^{Q}w_j(\lambda_j+A)^{-1}A^{-1}+\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}A^{-1}\\
+=& \frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}A^{-1}+\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\left((\lambda_j+A)^{-1}-A^{-1}\right)\\
+=& \left(\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\right)A^{-1}+\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}(\lambda_j+A)^{-1}\\
+=& w_0 A^{-1}+\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}(\lambda_j+A)^{-1}\\
+=& \sum_{j=0}^{Q}\frac{w_j}{\lambda_j}(\lambda_j+A)^{-1}
+  \end{aligned}
+\end{equation}
+
+where
+\begin{equation}
+  \begin{aligned}
+& w_0=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\\
+& w_j=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\left(\frac{\sigma}{2}\right)^{(2-\alpha)}\hat{w_j},\quad j=1,...,Q\\
+& \lambda_0=0,\quad \lambda_j=\frac{\sigma(1+\hat{x_j})}{2},\quad j=1,...,Q
+  \end{aligned}
+\end{equation}
+
+$\hat{x}_j$ and $\hat{w}_j$ are the standard Jacobi-Gauss quadrature points and weights with respect to the weight function $(1+x)^{1-\alpha}$.
+\begin{table}[htbp]
+	\centering
+	\caption{Summary of the approximation of $A_1^{-\alpha}$}\label{TAB_A1}
+	\begin{tabular}
+		{c|c|l}
+		\toprule
+		\textbf{Method}   &  \textbf{Formula}  & \textbf{Parameter}\\
+		\hline
+		Ignore small term &${A_1}^{-\alpha}\approx w(\lambda+A)^{-1}$   &  $\begin{aligned}&w=\frac{\sin(\alpha \pi)\sigma^{1-\alpha}}{\pi (1-\alpha)} 
+			\\&\lambda=\sigma\end{aligned}$ \\
+		\hline
+		Jacobi-Gauss&${A}^{-\alpha}\approx \sum_{j=0}^{Q}\frac{w_j}{\lambda_j}(\lambda_j+A)^{-1}$ & $\begin{aligned}& w_0=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\\
+			& w_j=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\left(\frac{\sigma}{2}\right)^{(2-\alpha)}\hat{w_j},\quad j=1,...,Q\\
+			& \lambda_0=0,\quad \lambda_j=\frac{\sigma(1+\hat{x_j})}{2},\quad j=1,...,Q
+		\end{aligned}$\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+\subsection{$A_2^{-\alpha}$ 的近似( $\alpha \rightarrow 1$)}
+\esubsection{\textbf{The approximation of $A_2^{-\alpha}$ when $\alpha \rightarrow 1$}}
+Here, we focus on the approximation of $A_2^{-\alpha}$ when $\alpha \rightarrow 1$. Let $\sigma \ne 0$, otherwise the integral is not integrable.
+
+\textbf{1. SE transformation}
+
+We use $s=e^{\mu x}+\sigma$  to transform the integration interval to $(-\infty,+\infty)$, $s'(x)=\mu e^{\mu x}$, and then we can also use trapezoidal rule to get
+\begin{equation}
+  \begin{aligned}
+&\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{\infty}s^{-\alpha}(s{I}+{A})^{-1}ds\\
+=&\frac{\sin(\alpha \pi)}{\pi}\int_{-\infty}^{+\infty}\frac{(e^{\mu x}+\sigma)^{-\alpha}\mu e^{\mu x}}{(e^{\mu x}+\sigma){I}+ {A}}dx\\
+ \approx & \sum_{j=1}^{Q}w_j(\lambda_jI+A)^{-1}
+  \end{aligned}
+  \label{SE_2}
+\end{equation}
+
+where
+\begin{equation}
+\begin{aligned}
+&w_j=h \frac{\sin(\pi \alpha)}{\pi}\mu (e^{\mu x_j}+\sigma)^{-\alpha}e^{\mu x_j}\\
+&\lambda_j=e^{\mu x_j}+\sigma
+\end{aligned}
+\end{equation}
+
+The integral function
+\begin{equation}
+f(x)=\frac{(e^{\mu x}+\sigma)^{-\alpha}\mu e^{\mu x}}{e^{\mu x}+\sigma+ {A}}
+\label{function_SE_alpha1}
+\end{equation}
+
+We plot it in Figure $\ref{function_SE2}$.
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{function_SE1_1}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{function_SE1_2}}
+~~
+\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{function_SE1_3}}\\
+\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{function_SE1_4}}
+~~
+\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{function_SE1_5}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{function_SE1_6}}
+  \caption{The integrand f(x) $\eqref{function_SE_alpha1}$, for different $\sigma,\mu=1,A=50$}
+  \label{function_SE2}
+\end{figure}
+
+
+
+It's easy to find that
+\begin{equation}
+\begin{aligned}
+& f(x)\rightarrow \frac{\mu e^{(1-\alpha)\mu x}}{e^{\mu x}}=\mu e^{-\alpha \mu x}\quad (x \rightarrow +\infty)\\
+& f(x)\rightarrow \frac{\mu \sigma^{-\alpha}e^{\mu x}}{\sigma+A}\quad (x \rightarrow -\infty)
+\end{aligned}
+\end{equation}
+
+when $x\rightarrow +\infty$, let $\mu e^{-\alpha \mu x}\leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\geq -\frac{\ln(\epsilon A^{-\alpha}/\mu)}{\alpha \mu}
+\end{equation}
+
+When $x\rightarrow -\infty$, let $\mu \sigma^{-\alpha}e^{\mu x}/(\sigma+A)\leq \epsilon A^{-\alpha}$ and $e^{\mu x}\le \frac{\sigma}{10}$, we can get
+\begin{equation}
+x\leq \min\left\{\frac{\ln(\sigma^{\alpha}(\sigma+A)\epsilon A^{-\alpha}/\mu)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+\begin{aligned}
+&x_{\min}=\min\left\{\frac{\ln(\sigma^{\alpha}(\sigma+A_{\min})\epsilon A_{\min}^{-\alpha}/\mu)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}\\
+&x_{\max}=-\frac{\ln(\epsilon A_{\max}^{-\alpha}/\mu)}{\alpha \mu}
+\end{aligned}
+\end{equation}
+
+
+We take $A$ in the range 1-1000, $Q=256$,  $\epsilon=10^{-16}$ and test the relative error $\eqref{error}$. For different $\alpha $, the results are shown in Figure $\ref{E_DT_SE}$ and Figure $\ref{E_JG_SE}$.
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE1_1}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE1_2}}
+~~
+\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE1_3}}\\
+\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE1_4}}
+~~
+\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE1_5}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE1_6}}
+  \caption{The error of IS-SE1}
+  \label{E_DT_SE}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE1_1}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE1_2}}
+~~
+\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE1_3}}\\
+\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE1_4}}
+~~
+\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE1_5}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE1_6}}
+  \caption{The error of JG-SE1}
+  \label{E_JG_SE}
+\end{figure}
+
+
+\textbf{ 2.DE transformation}
+
+We use $s=\exp(\mu \sinh x)+\sigma$ to transform the integration interval to $(-\infty,+\infty)$, $s'(x)=\mu\cosh x \exp(\mu \sinh x)$, and then we can also use trapezoidal rule to get
+\begin{equation}
+  \begin{aligned}
+&\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{\infty}s^{-\alpha}(u{I}+{A})^{-1}ds\\
+=&\frac{\sin(\alpha \pi)}{\pi}\int_{-\infty}^{+\infty}\frac{(\exp(\mu \sinh x)+\sigma)^{-\alpha}\mu\cosh x\exp(\mu \sinh x)}{(\exp(\mu \sinh x)+\sigma){I}+A}dx\\
+ \approx & \sum_{j=1}^{Q}w_j(\lambda_jI+A)^{-1}
+  \end{aligned}
+  \label{DE_2}
+\end{equation}
+
+where
+\begin{equation}
+\begin{aligned}
+&w_j=h \frac{\sin(\pi \alpha)}{\pi}\mu\cosh x_j(\exp(\mu \sinh x_j)+\sigma)^{-\alpha}\exp(\mu \sinh x_j)\\
+&\lambda_j=\exp(\mu \sinh x_j)+\sigma
+\end{aligned}
+\end{equation}
+
+ The integral function
+\begin{equation}
+f(x)=\mu\cosh x\frac{(\exp(\mu \sinh x)+\sigma)^{-\alpha}\exp(\mu \sinh x)}{\exp(\mu \sinh x)+\sigma+A}
+\label{function_DE_alpha1}
+\end{equation}
+
+For $\mu=\pi/2$ and $\sigma=1$, we plot it in Figure$\ref{function_DE2}$.
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{function_DE1_1}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{function_DE1_2}}
+~~
+\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{function_DE1_3}}\\
+\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{function_DE1_4}}
+~~
+\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{function_DE1_5}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{function_DE1_6}}
+  \caption{The integrand f(x)in $\eqref{function_DE_alpha1}$ for different $\sigma,\mu=\pi/2,A=50$}
+  \label{function_DE2}
+\end{figure}
+
+
+
+It's easy to find that
+\begin{equation}
+\begin{aligned}
+& f(x)\rightarrow \frac{\mu}{2}e^x\frac{\exp((1-\alpha)\mu e^x/2)}{\exp(\mu e^x/2)}\rightarrow \frac{\mu}{2}\exp(-\alpha \frac{\mu}{2} e^x)\quad (x \rightarrow +\infty)\\
+& f(x)\rightarrow \frac{\mu}{2}e^{-x}\frac{\sigma^{-\alpha}\exp(-\mu e^{-x}/2)}{\sigma+A} \rightarrow \frac{\mu }{2}\sigma^{-\alpha}(\sigma+A)^{-1}\exp(-\frac{\mu}{2}e^{-x})  \quad (x \rightarrow -\infty)
+\end{aligned}
+\end{equation}
+
+when $x\rightarrow +\infty$, let $\frac{\mu}{2}\exp(-\alpha \frac{\mu}{2} e^x)\leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\geq \ln\left(-\frac{2\ln(2\epsilon A^{-\alpha}/\mu)}{\mu \alpha}\right)
+\end{equation}
+
+When $x\rightarrow -\infty$, let $\frac{\mu }{2}\sigma^{-\alpha}(\sigma+A)^{-1}\exp(-\frac{\mu}{2}e^{-x}) \leq \epsilon A^{-\alpha}$ and $\exp(-\frac{\mu}{2}e^{-x})< \frac{\sigma}{10}$, we can get
+\begin{equation}
+x\leq \min \left\{-\ln\left(-\frac{2\ln(2\sigma^{\alpha}(\sigma+A)\epsilon A^{-\alpha}/\mu)}{\mu}\right),-\ln\left(-\frac{2\ln(\sigma/10)}{\mu}\right) \right\}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}\begin{aligned}&x_{\min}=\min \left\{-\ln\left(-\frac{2\ln(2\sigma^{\alpha}(\sigma+A_{\min})\epsilon A_{\min}^{-\alpha}/\mu)}{\mu}\right),-\ln\left(-\frac{2\ln(\sigma/10)}{\mu}\right) \right\}
+\\&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon A_{\max}^{-\alpha}/\mu)}{\mu \alpha}\right)
+\end{aligned}\end{equation}
+
+We take $A$ in the range 1-1000, $Q=256, N=256$,  $\epsilon=10^{-16}$ and test the relative error $\eqref{error}$. For different $\alpha $, the results are shown in Figure $\ref{E_DT_DE}$ and Figure $\ref{E_JG_DE}$
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE1_1}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE1_2}}
+~~
+\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE1_3}}\\
+\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE1_4}}
+~~
+\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE1_5}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE1_6}}
+  \caption{The error of IS-DE1}
+  \label{E_DT_DE}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=0.9$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE1_1}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE1_2}}
+~~
+\subfloat[$\alpha=1-10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE1_3}}\\
+\subfloat[$\alpha=1-10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE1_4}}
+~~
+\subfloat[$\alpha=1-10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE1_5}}
+~~
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE1_6}}
+ \caption{The error of JG-DE1}
+  \label{E_JG_DE}
+\end{figure}
+
+\begin{table}[htbp]
+	\centering
+	\caption{Summary of  methods as $\alpha \rightarrow$ 1 }\label{TAB_SEDE1}
+	\begin{tabular}
+		{c|c|c}
+		\toprule
+		\textbf{Method }  &  \textbf{Formula } & \textbf{Parameter}\\
+		\hline
+		IS-SE1&$\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}$&$\begin{aligned}&w_0=\frac{\sin(\alpha \pi)\sigma^{1-\alpha}}{\pi (1-\alpha)}\\& \lambda_0=\sigma\\&w_j=h \frac{\sin(\pi \alpha)}{\pi}\mu (e^{\mu x_j}+\sigma)^{-\alpha}e^{\mu x_j}\\&\lambda_j=e^{\mu x_j}+\sigma\end{aligned}$\\
+		\hline
+		IS-DE1 & $\sum_{j=0}^{Q}w_j(\lambda_jI+A)^{-1}$  &$\begin{aligned}&w_0=\frac{\sin(\alpha \pi)\sigma^{1-\alpha}}{\pi (1-\alpha)}\\& \lambda_0=\sigma\\&w_j=h \frac{\sin(\pi \alpha)}{\pi}(\exp(\mu \sinh x_j)+\sigma)^{-\alpha}\\&\qquad \mu\cosh x_j\exp(\mu \sinh x_j)\\&\lambda_j=\exp(\mu \sinh x_j)+\sigma\end{aligned}$\\
+		\hline
+		JG-SE1 & $\begin{aligned}&\sum_{j=0}^{Q}\frac{w_{j}}{\lambda_{j}}(\lambda_{j}+A)^{-1}\\+&\sum_{i=1}^{N}w_{i}(\lambda_{i}I+A)^{-1}\end{aligned}$& $ \begin{aligned}& w_0=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\\& w_j=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\left(\frac{\sigma}{2}\right)^{(2-\alpha)}\hat{w_j},\quad j=1,...,Q\\& \lambda_0=0,\quad \lambda_j=\frac{\sigma(1+\hat{x_j})}{2},\quad j=1,...,Q \\&w_i=h \frac{\sin(\pi \alpha)}{\pi}\mu (e^{\mu x_i}+\sigma)^{-\alpha}e^{\mu x_i}\\&\lambda_i=e^{\mu x_i}+\sigma\end{aligned}$ \\
+		\hline
+		JG-DE1 & $\begin{aligned}&\sum_{j=0}^{Q}\frac{w_{j}}{\lambda_{j}}(\lambda_{j}+A)^{-1}\\+&\sum_{i=1}^{N}w_{i}(\lambda_{i}I+A)^{-1}\end{aligned}$ & $ \begin{aligned}& w_0=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\\& w_j=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\left(\frac{\sigma}{2}\right)^{(2-\alpha)}\hat{w_j},\quad j=1,...,Q\\& \lambda_0=0,\quad \lambda_j=\frac{\sigma(1+\hat{x_j})}{2},\quad j=1,...,Q \\&w_i=h \frac{\sin(\pi \alpha)}{\pi}(\exp(\mu \sinh x_i)+\sigma)^{-\alpha}\\&\qquad \mu\cosh x_i\exp(\mu \sinh x_i)\\&\lambda_i=\exp(\mu \sinh x_i)+\sigma\end{aligned}$\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{$A_2^{-\alpha}$ 的近似( $\alpha \rightarrow 0$)}
+\esubsection{\textbf{The approximation of $A_2^{-\alpha}$ when $\alpha \rightarrow 0$}}
+Then, we focus on the approximation of $A_2^{-\alpha}$ when $\alpha \rightarrow 0 $.
+\begin{equation}\begin{aligned}
+&\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}s^{-\alpha}(s+A)^{-1}ds\\
+=& \frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}\frac{s+A-A}{s+A}s^{-\alpha-1}ds\\
+=& \frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}\left(s^{-\alpha-1}-\frac{A}{s+A}s^{-\alpha-1}\right)ds\\
+=& \frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}s^{-\alpha-1}ds-\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}\frac{A}{s+A}s^{-\alpha-1}ds\\
+=& \frac{\sin(\alpha \pi)}{\alpha\pi}\sigma^{-\alpha}-\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}\frac{A}{s+A}s^{-\alpha-1}ds
+\end{aligned}\end{equation}
+
+\textbf{1.SE formula }
+
+Let $s=e^{\mu x}+\sigma$, then $s'(x)=\mu e^{\mu x}$
+\begin{equation}
+\begin{aligned}
+&\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}\frac{A}{s+A}s^{-\alpha-1}ds\\
+=&\frac{\sin(\alpha \pi)A}{\pi}\int_{-\infty}^{+\infty}\frac{(e^{\mu x}+\sigma)^{-\alpha-1}\mu e^{\mu x}}{e^{\mu x}+\sigma+A}dx\\
+=& A\sum_{j=1}^{Q} w_j(\lambda_j I+ A)^{-1}
+\end{aligned}
+\end{equation}
+
+where
+\begin{equation}
+\begin{aligned}
+& w_j=h\frac{\sin(\alpha \pi)}{\pi}(e^{\mu x_j}+\sigma)^{-\alpha-1}\mu e^{\mu x_j}\\
+& \lambda_j=e^{\mu x_j}+\sigma
+\end{aligned}
+\end{equation}
+
+Now, let's focus on the integrand
+\begin{equation}
+f(x)=\mu e^{\mu x}\frac{(e^{\mu x}+\sigma)^{-\alpha-1}}{e^{\mu x}+\sigma+A}
+\label{function_SE_alpha0}
+\end{equation}
+
+
+We plot it in Figure $\ref{function_SE_alpha0}$. We can see that the integrand decreases rapidly at $\alpha \rightarrow 1$ and $\alpha \rightarrow 0$.
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{function_SE0_1}}
+~~
+\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{function_SE0_2}}
+~~
+\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{function_SE0_3}}\\
+\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{function_SE0_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{function_SE0_5}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{function_SE0_6}}
+  \caption{The integrand f(x) in $\eqref{function_SE_alpha0}$ for $\sigma=1,\mu=1,A=50$}
+  \label{function_SE_alpha0}
+\end{figure}
+
+
+
+
+It's easy to find that
+\begin{equation}
+\begin{aligned}
+& f(x)\rightarrow \mu e^{-(\alpha+1) \mu x}\quad (x \rightarrow +\infty)\\
+& f(x)\rightarrow \frac{\mu \sigma^{-\alpha-1}}{\sigma+A}e^{\mu x}\quad (x \rightarrow -\infty)
+\end{aligned}
+\end{equation}
+
+when $x\rightarrow +\infty$, let $\mu e^{-(\alpha+1)\mu x}\leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\geq -\frac{\ln(\epsilon A^{-\alpha}/\mu)}{(\alpha+1)\mu}
+\end{equation}
+
+When $x\rightarrow -\infty$, let $\mu\sigma^{-\alpha-1}e^{\mu x}(\sigma+A)^{-1}\leq \epsilon A^{-\alpha}$ and $e^{\mu x}\le \frac{\sigma}{10}$, we can get
+\begin{equation}
+x\leq \min \left\{\frac{\ln(\sigma^{\alpha+1}(\sigma+A)\epsilon A^{-\alpha}/\mu)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}
+\end{equation}
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}
+\begin{aligned}
+&x_{\min}= \min \left\{\frac{\ln(\sigma^{\alpha+1}(\sigma+A_{\min})\epsilon A_{\min}^{-\alpha}/\mu)}{\mu},\frac{\ln(\sigma/10)}{\mu}\right\}\\
+&x_{\max}=-\frac{\ln(\epsilon A_{\max}^{-\alpha}/\mu)}{(\alpha+1)\mu}
+\end{aligned}
+\end{equation}
+
+We take $A$ in the range 1-1000, $Q=256$,  $\epsilon=10^{-16}$ and test the relative error $\eqref{error}$. For different $\alpha $, the results are shown in Figure $\ref{E_DT_SE0}$ and Figure $\ref{E_JG_SE0}$
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE0_1}}
+~~
+\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE0_2}}
+~~
+\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE0_3}}\\
+\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE0_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE0_5}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{Error_DT-SE0_6}}
+  \caption{The error of IS-SE0}
+  \label{E_DT_SE0}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE0_1}}
+~~
+\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE0_2}}
+~~
+\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE0_3}}\\
+\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE0_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE0_5}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{Error_JG-SE0_6}}
+  \caption{The error of JG-SE0}
+   \label{E_JG_SE0}
+\end{figure}
+ 
+
+\textbf{ 2.DE formula}
+
+Let $s=\exp(\mu\sinh x)+\sigma$, then
+\begin{equation}
+\begin{aligned}
+&\frac{\sin(\alpha \pi)}{\pi}\int_{\sigma}^{+\infty}\frac{A}{s+A}s^{-\alpha-1}ds\\
+=&\frac{\sin(\alpha \pi)A}{\pi}\int_{-\infty}^{+\infty}\frac{(\exp(\mu\sinh x)+\sigma)^{-\alpha-1}\mu\cosh x\exp(\mu\sinh x)}{\exp(\mu\sinh x)+\sigma+A}dx\\
+=& A\sum_{j=1}^{Q} w_j(\lambda_j I+ A)^{-1}
+\end{aligned}
+\end{equation}
+
+where
+\begin{equation}
+\begin{aligned}
+& w_j=h\frac{\sin(\alpha\pi)}{\pi}(\exp(\mu\sinh x_j)+\sigma)^{-\alpha-1}\mu\cosh x_j\exp(\mu\sinh x_j)\\
+& \lambda_j=\exp(\mu\sinh x_j)+\sigma
+\end{aligned}
+\end{equation}
+
+Now, let's focus on the integrand
+\begin{equation}
+f(x)=\mu\cosh x\frac{(\exp(\mu\sinh x)+\sigma)^{-\alpha-1}\exp(\mu\sinh x)}{\exp(\mu\sinh x)+\sigma+A}
+\label{function_DE_alpha0}
+\end{equation}
+
+
+
+We plot it in Figure $\ref{function_DE_alpha0}$.  We can see that the integrand decreases rapidly at $\alpha \rightarrow 0$.
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{function_DE0_1}}
+~~
+\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{function_DE0_2}}
+~~
+\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{function_DE0_3}}\\
+\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{function_DE0_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{function_DE0_5}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{function_DE0_6}}
+  \caption{The integrand f(x) in $\eqref{function_DE_alpha0}$, $\sigma=1,\mu=\pi/2,A=50$}
+  \label{function_DE_alpha0}
+\end{figure}
+
+
+
+It's easy to find that
+\begin{equation}
+\begin{aligned}
+& f(x) \rightarrow \frac{\mu}{2}e^x \exp(-(\alpha+1)\frac{\mu}{2}e^x)\rightarrow  \frac{\mu}{2} \exp(-(\alpha+1)\frac{\mu}{2}e^x) \quad(x\rightarrow +\infty)\\
+& f(x) \rightarrow \frac{\mu}{2}e^{-x} \frac{\sigma^{-\alpha-1}\exp(-\mu e^{-x}/2)}{\sigma+A}\rightarrow \frac{\mu}{2} \frac{\sigma^{-\alpha-1}\exp(-\mu e^{-x}/2)}{\sigma+A} \quad(x\rightarrow -\infty)
+\end{aligned}
+\end{equation}
+
+when $x\rightarrow +\infty$, let $\frac{\mu}{2} \exp(-(\alpha+1)\frac{\mu}{2}e^x)\leq \epsilon A^{-\alpha}$, we can get
+\begin{equation}
+x\geq \ln\left(-\frac{2\ln(2\epsilon A^{-\alpha}/\mu)}{\mu(\alpha+1)}\right)
+\end{equation}
+
+
+When $x\rightarrow -\infty$, let $\frac{\mu}{2}\sigma^{-\alpha-1}\exp(-\frac{\mu}{2} e^{-x})(\sigma+A)^{-1}\leq \epsilon A^{-\alpha}$ and $\exp(-\frac{\mu}{2}e^{-x})\le \frac{\sigma}{10}$, we can get
+\begin{equation}
+x\leq \min \left\{-\ln\left(-\frac{2\ln(2\sigma^{\alpha+1}(\sigma+A)\epsilon A^{-\alpha}/\mu)}{\mu}\right),-\ln \left(-\frac{2\ln(\sigma/10)}{\mu}\right)\right\}
+\end{equation}
+
+
+So  $x_{\min}$and $x_{\max}$ can be preliminarily estimated as:
+\begin{equation}\begin{aligned}&x_{\min}=\min \left\{-\ln\left(-\frac{2\ln(2\sigma^{\alpha+1}(\sigma+A_{\min})\epsilon A_{\min}^{-\alpha}/\mu)}{\mu}\right),-\ln \left(-\frac{2\ln(\sigma/10)}{\mu}\right)\right\}
+\\&x_{\max}=\ln\left(-\frac{2\ln(2\epsilon A_{\max}^{-\alpha}/\mu)}{\mu(\alpha+1)}\right)
+\end{aligned}\end{equation}
+
+
+We take $A$ in the range 1-1000, $Q=256$, $\mu=\pi/2$, $\epsilon=10^{-16}$ and test the relative error $\eqref{error}$. For different $\alpha $, the results are shown in Figure $\ref{E_DT_DE0}$ and Figure $\ref{E_JG_DE0}$ 
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE0_1}}
+~~
+\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE0_2}}
+~~
+\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE0_3}}\\
+\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE0_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE0_5}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{Error_DT-DE0_6}}
+ \caption{The error of IS-DE0}
+  \label{E_DT_DE0}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE0_1}}
+~~
+\subfloat[$\alpha=10^{-8}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE0_2}}
+~~
+\subfloat[$\alpha=10^{-6}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE0_3}}\\
+\subfloat[$\alpha=10^{-4}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE0_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE0_5}}
+~~
+\subfloat[$\alpha=0.1$]{\includegraphics[width=0.3\textwidth]{Error_JG-DE0_6}}
+ \caption{The error of JG-DE0}
+  \label{E_JG_DE0}
+\end{figure}
+
+\begin{table}[htbp]
+	\centering
+	\caption{Summary of  methods as $\alpha \rightarrow$ 0 }\label{TAB_SEDE0}
+	\begin{tabular}
+		{c|c|c}
+		\toprule
+		\textbf{Method}   &  \textbf{Formula}  & \textbf{Parameter}\\
+		\hline
+		IS-SE0       & $\begin{aligned}&w(\lambda I+A)^{-1}\\+&\frac{\sin(\alpha \pi)}{\alpha\pi}\sigma^{-\alpha}-A\sum_{j=1}^{N} w_j(\lambda_j I+ A)^{-1}\end{aligned}$& $\begin{aligned}&w=\frac{\sin(\alpha \pi)\sigma^{1-\alpha}}{\pi (1-\alpha)},\quad \lambda=\sigma\\& w_j=h\frac{\sin(\alpha \pi)}{\pi}(e^{\mu x_j}+\sigma)^{-\alpha-1}\mu e^{\mu x_j}\\& \lambda_j=e^{\mu x_j}+\sigma\end{aligned}$\\
+		\hline
+		IS-DE0  &$\begin{aligned}&w(\lambda I+A)^{-1}\\+&\frac{\sin(\alpha \pi)}{\alpha\pi}\sigma^{-\alpha}-A\sum_{j=1}^{Q} w_j(\lambda_j I+ A)^{-1}\end{aligned}$ & $\begin{aligned}&w=\frac{\sin(\alpha \pi)\sigma^{1-\alpha}}{\pi (1-\alpha)},\quad \lambda=\sigma\\& w_j=h\frac{\sin(\alpha\pi)}{\pi}(\exp(\mu\sinh x_j)+\sigma)^{-\alpha-1}\\&\qquad \mu\cosh x_j\exp(\mu\sinh x_j)\\& \lambda_j=\exp(\mu\sinh x_j)+\sigma\end{aligned}$\\
+		\hline
+		JG-SE0 & $\begin{aligned}&\sum_{j=0}^{Q}\frac{w_j}{\lambda_j}(\lambda_j+A)^{-1}\\+&\frac{\sin(\alpha \pi)}{\alpha\pi}\sigma^{-\alpha}-A\sum_{i=1}^{N} w_i(\lambda_i I+ A)^{-1}\end{aligned}$ & $\begin{aligned}& w_0=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\\& w_j=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\left(\frac{\sigma}{2}\right)^{(2-\alpha)}\hat{w_j},\quad j=1,...,Q\\& \lambda_0=0,\quad \lambda_j=\frac{\sigma(1+\hat{x_j})}{2},\quad j=1,...,Q \\& w_i=h\frac{\sin(\alpha \pi)}{\pi}(e^{\mu x_i}+\sigma)^{-\alpha-1}\mu e^{\mu x_i}\\& \lambda_j=e^{\mu x_i}+\sigma\end{aligned}$\\
+		\hline
+		JG-DE0 &$\begin{aligned}&\sum_{j=0}^{Q}\frac{w_j}{\lambda_j}(\lambda_j+A)^{-1}\\+&\frac{\sin(\alpha \pi)}{\alpha\pi}\sigma^{-\alpha}-A\sum_{i=1}^{N} w_i(\lambda_i I+ A)^{-1}\end{aligned}$& $\begin{aligned}& w_0=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\sigma^{1-\alpha}-\sum_{j=1}^{Q}\frac{w_j}{\lambda_j}\\& w_j=\frac{\sin(\alpha \pi)}{\pi(1-\alpha)}\left(\frac{\sigma}{2}\right)^{(2-\alpha)}\hat{w_j},\quad j=1,...,Q\\& \lambda_0=0,\quad \lambda_j=\frac{\sigma(1+\hat{x_j})}{2},\quad j=1,...,Q \\& w_i=h\frac{\sin(\alpha\pi)}{\pi}(\exp(\mu\sinh x_i)+\sigma)^{-\alpha-1}\\&\qquad \mu\cosh x_i\exp(\mu\sinh x_i)\\& \lambda_i=\exp(\mu\sinh x_i)+\sigma\end{aligned}$ \\
+		
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+
+\section{特殊情形}
+\esection{Special Situations}
+If $\alpha \rightarrow 0,\alpha \rightarrow 1$, the above method will lead to a larger error. We can use the following decomposition to solve this problem:
+
+\begin{equation}
+{A}^{-\alpha}={A}^{(-\alpha-1)/2}{A}^{(-\alpha-1)/2}{A}
+\label{special0}
+\end{equation}
+
+\begin{equation}
+{A}^{-\alpha}={A}^{-\alpha/2}{A}^{-\alpha/2}
+\label{special1}
+\end{equation}
+
+ ${A}^{-\alpha/2}$ and ${A}^{(-\alpha-1)/2}$  can be solved by using the above methods.
+
+From the above analysis and discussion, it can be seen that when $\alpha \rightarrow 1$, IS-SE1($\sigma=10^({-20})$) method is relatively optimal, and when $\alpha \rightarrow 0$, JG-SE0($\sigma=10^{-8}$) method is relatively optimal.Here, we show the excellent performance in Figure $\ref{improved_small},\ref{improved}$
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=10^{-10}$]{\includegraphics[width=0.3\textwidth]{improved_small_DE_1}}
+~~
+\subfloat[$\alpha=10^{-7}$]{\includegraphics[width=0.3\textwidth]{improved_small_DE_2}}
+~~
+\subfloat[$\alpha=10^{-5}$]{\includegraphics[width=0.3\textwidth]{improved_small_DE_3}}\\
+\subfloat[$\alpha=10^{-3}$]{\includegraphics[width=0.3\textwidth]{improved_small_DE_4}}
+~~
+\subfloat[$\alpha=10^{-2}$]{\includegraphics[width=0.3\textwidth]{improved_small_DE_5}}
+~~
+\subfloat[$\alpha=10^{-1}$]{\includegraphics[width=0.3\textwidth]{improved_small_DE_6}}
+  \caption{The Relative errors with different $\alpha \rightarrow 0$}
+  \label{improved_small}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\subfloat[$\alpha=1-10^{-10}$]{\includegraphics[width=0.3\textwidth]{improved_DE_1}}
+~~
+\subfloat[$\alpha=1-10^{-7}$]{\includegraphics[width=0.3\textwidth]{improved_DE_2}}
+~~
+\subfloat[$\alpha=1-10^{-5}$]{\includegraphics[width=0.3\textwidth]{improved_DE_3}}\\
+\subfloat[$\alpha=1-10^{-3}$]{\includegraphics[width=0.3\textwidth]{improved_DE_4}}
+~~
+\subfloat[$\alpha=1-10^{-2}$]{\includegraphics[width=0.3\textwidth]{improved_DE_5}}
+~~
+\subfloat[$\alpha=1-10^{-1}$]{\includegraphics[width=0.3\textwidth]{improved_DE_6}}
+  \caption{The Relative errors with different $\alpha \rightarrow 1$}
+  \label{improved}
+\end{figure}
+
+\section{本章小结}
+\esection{Chapter summary}
+
+This chapter summarizes the different approximate methods of $A^{-\alpha}$. From the above discussion, it can be seen that when $\alpha \not\rightarrow 0 $,$\alpha \not\rightarrow 1$, SE method and DE method can achieve high enough accuracy. When $\alpha \rightarrow 0 $,JG-SE0($\sigma=10^{-8}$) method and special case (\ref{special0}) can work very well; When $\alpha \rightarrow 1$, IS-SE1 ($\sigma=10^{-20}$) method and special case (\ref{special1}) can work very well, and their accuracy is very similar.
