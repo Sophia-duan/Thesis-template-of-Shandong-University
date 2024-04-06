@@ -1,0 +1,22 @@
+\begin{thebibliography}{1}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax\else
+  \urlstyle{same}\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \DeclareUrlCommand\doi{\urlstyle{rm}}
+  \def\eprint#1#2{#2}
+\else
+  \def\doi#1{\href{https://doi.org/#1}{\nolinkurl{#1}}}
+  \let\eprint\href
+\fi
+
+\bibitem[Smeulders et~al.(2000)Smeulders, Worring, Santini, Gupta, and
+  Jain]{smeulders2000content}
+SMEULDERS A~W, WORRING M, SANTINI S, et~al.
+\newblock Content-based image retrieval at the end of the early
+  years\allowbreak[J].
+\newblock IEEE Transactions on pattern analysis and machine intelligence, 2000,
+  22\allowbreak (12): 1349-1380.
+
+\end{thebibliography}

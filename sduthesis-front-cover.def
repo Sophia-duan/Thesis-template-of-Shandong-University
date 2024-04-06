@@ -1,0 +1,79 @@
+\newtoks\fenlei		     % 中图分类号
+\newtoks\DWdaihao	     % 单位代号
+\newtoks\miji		     % 密级
+\newtoks\StuNum		     % 学号
+\newtoks\CThesisType     % 论文类型 中
+\newtoks\EThesisType     % 论文类型 英
+\newtoks\Ctitle		     % 中文标题
+\newtoks\Etitle		     % 英文标题
+\newtoks\Cauthor	     % 作者中文名
+\newtoks\Cmajor		     % 专业
+\newtoks\Csuperver	     % 导师
+\newtoks\Ccosuperver     % 合作导师
+\newtoks\Cdate		     % 中文日期
+\newtoks\Dpart		     % 学院
+\newtoks\Grade		     % 年级
+\newtoks\ThesisHeader	 % 正文页眉
+\newtoks\EThesisHeader   % 英文页眉
+
+\RequirePackage{makecell}
+\RequirePackage{colortbl} 
+\newcommand{\LeftLength}{2.3cm}
+\newcommand{\RightLength}{5.5cm}
+\newcommand{\Mcs}[1]{\makebox[\LeftLength][s]{{\zihao{4}\bfseries\heiti{}#1}}}
+\newcommand{\Mcc}[1]{\makebox[\RightLength][c]{{\zihao{4}\heiti{}#1}}}
+\newcommand{\TopTitleLeft}[1]{\makebox[2cm][s]{{\zihao{4}\bfseries\heiti{}#1}}}
+\newcommand{\TopTitleRight}[1]{\makebox[2.5cm][l]{{\zihao{4}\heiti{}#1}}}
+
+\newcommand{\maketitlepage}{%
+\thispagestyle{empty}
+
+\begin{flushleft}
+\TopTitleLeft{\textcolor{SDUred}{分类号：}}~~\TopTitleRight{\the\fenlei}\hfill\TopTitleLeft{\textcolor{SDUred}{单位代码：\quad}}~~\TopTitleRight{\quad\textcolor{SDUred}{10422}}\\
+\TopTitleLeft{\textcolor{SDUred}{密级：}}~~\TopTitleRight{\the\miji}\hfill\TopTitleLeft{\textcolor{SDUred}{学\quad\quad 号：\quad}}~~\TopTitleRight{\quad\the\StuNum}
+\end{flushleft}
+
+\begin{center}
+~
+\vskip 12mm\relax
+{
+{\includegraphics[width = .83\textwidth]{SDU.jpg}}\\[3mm]
+%{\scalebox{4}{\fzbHei{}\the\CThesisType}}\\[4mm]
+%{\scalebox{1.3}{\fzbHei{}\the\EThesisType}}\\
+%			{\heiti{}（专业学位）}  % 科学学位请将本行注释掉
+}
+%\par \vskip 15mm \relax
+{
+\begin{flushleft}
+{\zihao{-2}\bfseries\heiti{}\textcolor{SDUred}{论文题目:}~~}
+\bfseries\zihao{-2}\heiti\the\Ctitle\\
+\end{flushleft}
+}
+
+{
+%	\noindent
+%	\zihao{-1}\heiti\the\Ctitle\\
+\vskip 2mm
+\zihao{3}\bfseries\the\Etitle
+}
+\vfill
+{
+\begin{tabular}{p{\LeftLength}p{\RightLength}}
+\arrayrulecolor{SDUred}
+\Mcs{\textcolor{SDUred}{作~ 者~ 姓~ 名}}& \Mcc{\the\Cauthor}\\[-.8mm]\cline{2-2}\\[-4mm]
+%\Mcs{学号}& \Mcc{\the\StuNum}\\[-.8mm]\cline{2-2}\\[-4mm]
+\Mcs{\textcolor{SDUred}{培~ 养~ 单~ 位}}& \Mcc{\the\Dpart}\\[-.8mm]\cline{2-2}\\[-4mm]
+\Mcs{\textcolor{SDUred}{专~ 业~ 名~ 称}}& \Mcc{\the\Cmajor}\\[-.8mm]\cline{2-2}\\[-4mm]
+%\Mcs{年级}& \Mcc{\the\Grade}\\[-.8mm]\cline{2-2}\\[-4mm]
+\Mcs{\textcolor{SDUred}{指~ 导~ 教~ 师}}& \Mcc{\the\Csuperver}\\[-.8mm]\cline{2-2}\\[-4mm]
+\Mcs{\textcolor{SDUred}{合~ 作~ 导~ 师}}& \Mcc{\the\Ccosuperver}\\[-.8mm]\cline{2-2}
+\end{tabular}
+}
+\par \vskip 20mm \relax
+\color{SDUred}
+{
+\zihao{-2}\the\Cdate
+}
+\end{center}
+\let\cleardoublepage\clearpage
+}
